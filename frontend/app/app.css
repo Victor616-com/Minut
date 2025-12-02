@@ -1,0 +1,188 @@
+@import "tailwindcss";
+:root {
+  --text-color-dark: #302e3b;
+  --text-color-light: #7d7994;
+  --header-color: #ffffff;
+
+  --bg-color: #0c0c0c;
+
+  --gradient1-pink: #e783ff;
+  --gradient1-purple: #8381fd;
+
+  --gradient2-red: #ff4d07;
+  --gradient2-pink: #e97ad7;
+
+  --gradient3-blue: #2f3cc0;
+  --gradient3-lightblue: #00bae2;
+  --gradient3-pink: #e783ff;
+  --gradient3-red: #fc573d;
+
+  --gradient4-lightpink: #f7bef9;
+  --gradient4-pink: #cb247f;
+
+  --gradient5-lightpink: #f7bef9;
+  --gradient5-blue: #2f3cc0;
+
+  --gradient6-darkgreen: #0ae449;
+  --gradient6-lightgreen: #abff84;
+
+  --gradient7-pink: #cbc3f6;
+  --gradient7-teal: #00bae2;
+}
+
+html {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+@font-face {
+  font-family: "Eskool";
+  src: url("../assets/fonts/Eskool-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+* {
+  font-family: "Eskool", sans-serif;
+  box-sizing: border-box;
+}
+body {
+  background-color: var(--bg-color);
+}
+@theme {
+  --color-textdark: var(--text-color-dark);
+  --color-textlight: var(--text-color-light);
+}
+@layer components {
+  .text-m {
+    /* Font family */
+    font-family: "Eskool", sans-serif;
+    /* Font size & weight */
+    font-size: 1rem; /* 1rem = 16px */
+    font-weight: 400;
+    font-style: normal;
+    color: var(--text-color-dark);
+    /* Line height & letter spacing */
+    line-height: 125%; /* 40px */
+    letter-spacing: 0.5px;
+  }
+  .text-heading1 {
+    /* Font family */
+    font-family: "Eskool", sans-serif;
+    /* Font size & weight */
+    font-size: 2rem; /* 1rem = 16px */
+    font-weight: 400;
+    font-style: normal;
+    color: var(--header-color);
+    /* Line height & letter spacing */
+    line-height: 125%; /* 40px */
+    letter-spacing: 0.5px;
+  }
+  .text-heading2 {
+    /* Font family */
+    font-family: "Eskool", sans-serif;
+    /* Font size & weight */
+    font-size: 1.5rem; /* 1rem = 16px */
+    font-weight: 400;
+    font-style: normal;
+    color: var(--header-color);
+    /* Line height & letter spacing */
+    line-height: 125%; /* 40px */
+    letter-spacing: 0.5px;
+  }
+  .text-heading3 {
+    /* Font family */
+    font-family: "Eskool", sans-serif;
+    /* Font size & weight */
+    font-size: 1rem; /* 1rem = 16px */
+    font-weight: 400;
+    font-style: normal;
+    color: var(--header-color);
+    /* Line height & letter spacing */
+    line-height: 125%; /* 40px */
+    letter-spacing: 0.5px;
+  }
+
+  /* Color gradients for text */
+  .gradientText1 {
+    width: fit-content;
+    background: linear-gradient(
+      90deg,
+      var(--gradient1-pink) 0%,
+      var(--gradient1-purple) 100%
+    );
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .gradientText2 {
+    width: fit-content;
+    background: linear-gradient(
+      90deg,
+      var(--gradient2-red) 0%,
+      var(--gradient2-pink) 100%
+    );
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .gradientText3 {
+    width: fit-content;
+    background: linear-gradient(
+      90deg,
+      var(--gradient3-blue) 0%,
+      var(--gradient3-lightblue) 33%,
+      var(--gradient3-pink) 66%,
+      var(--gradient3-red) 100%
+    );
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .gradientText4 {
+    width: fit-content;
+    background: linear-gradient(
+      90deg,
+      var(--gradient4-lightpink) 0%,
+      var(--gradient4-pink) 100%
+    );
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .gradientText5 {
+    width: fit-content;
+    background: linear-gradient(
+      90deg,
+      var(--gradient5-lightpink) 0%,
+      var(--gradient5-blue) 100%
+    );
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .gradientText6 {
+    width: fit-content;
+    background: linear-gradient(
+      90deg,
+      var(--gradient6-darkgreen) 0%,
+      var(--gradient6-lightgreen) 100%
+    );
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .gradientText7 {
+    width: fit-content;
+    background: linear-gradient(
+      90deg,
+      var(--gradient7-pink) 0%,
+      var(--gradient7-teal) 100%
+    );
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+}
