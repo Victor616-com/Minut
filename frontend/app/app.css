@@ -4,6 +4,8 @@
   --text-color-light: #7d7994;
   --header-color: #ffffff;
 
+  --input-color: #ffffff;
+
   --bg-color: #0c0c0c;
 
   --gradient1-pink: #e783ff;
@@ -29,11 +31,36 @@
   --gradient7-pink: #cbc3f6;
   --gradient7-teal: #00bae2;
 }
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg-color: #fffbf4;
+    --input-color: #2f2f2f;
+    --header-color: #2f2f2f;
+  }
+}
 
 html {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
+:root:has(#theme [value="☀️"]:checked) {
+  color-scheme: light;
+  --bg-color: #fffbf4;
+  --input-color: #2f2f2f;
+  --header-color: #2f2f2f;
+}
+
+:root:has(#theme [value="🌑"]:checked) {
+  color-scheme: dark;
+  --header-color: #ffffff;
+  --input-color: #ffffff;
+  --bg-color: #0c0c0c;
+}
+
+:root:has(#theme [value="🙃"]:checked) {
+  --base: hotpink;
+  --text: dodgerblue;
 }
 
 @font-face {
@@ -49,13 +76,41 @@ html {
   box-sizing: border-box;
 }
 body {
+  color-scheme: dark light;
   background-color: var(--bg-color);
 }
 @theme {
   --color-textdark: var(--text-color-dark);
   --color-textlight: var(--text-color-light);
+  --color-inputcolor: var(--input-color);
+  --color-bgcolor: var(--bg-color);
+  --color-headercolor: var(--header-color);
 }
 @layer components {
+  .text-xs {
+    /* Font family */
+    font-family: "Eskool", sans-serif;
+    /* Font size & weight */
+    font-size: 0.75rem; /* 12px */
+    font-weight: 400;
+    font-style: normal;
+    color: var(--text-color-dark);
+    /* Line height & letter spacing */
+    line-height: 125%; /* 40px */
+    letter-spacing: 0.5px;
+  }
+  .text-s {
+    /* Font family */
+    font-family: "Eskool", sans-serif;
+    /* Font size & weight */
+    font-size: 0.875rem; /* 14px */
+    font-weight: 400;
+    font-style: normal;
+    color: var(--text-color-dark);
+    /* Line height & letter spacing */
+    line-height: 125%; /* 40px */
+    letter-spacing: 0.5px;
+  }
   .text-m {
     /* Font family */
     font-family: "Eskool", sans-serif;
@@ -84,7 +139,7 @@ body {
     /* Font family */
     font-family: "Eskool", sans-serif;
     /* Font size & weight */
-    font-size: 1.5rem; /* 1rem = 16px */
+    font-size: 1.25rem; /* 1rem = 16px */
     font-weight: 400;
     font-style: normal;
     color: var(--header-color);
@@ -185,4 +240,98 @@ body {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
+}
+
+/* Reusable gradient border generator */
+[class*="gradient-border-"] {
+  position: relative;
+  border-radius: 6px;
+  z-index: 0;
+}
+
+[class*="gradient-border-"]::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 1px; /* border width */
+  border-radius: inherit;
+  z-index: -1;
+
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+
+/* Specific gradient mappings */
+.gradient-border-white::before {
+  background: var(--input-color);
+}
+.gradient-border-gradient1::before {
+  background: linear-gradient(
+    90deg,
+    var(--gradient1-pink),
+    var(--gradient1-purple)
+  );
+}
+
+.gradient-border-gradient2::before {
+  background: linear-gradient(
+    90deg,
+    var(--gradient2-red),
+    var(--gradient2-pink)
+  );
+}
+
+.gradient-border-gradient3::before {
+  background: linear-gradient(
+    90deg,
+    var(--gradient3-blue),
+    var(--gradient3-lightblue),
+    var(--gradient3-pink),
+    var(--gradient3-red)
+  );
+}
+
+.gradient-border-gradient4::before {
+  background: linear-gradient(
+    90deg,
+    var(--gradient4-lightpink),
+    var(--gradient4-pink)
+  );
+}
+
+.gradient-border-gradient5::before {
+  background: linear-gradient(
+    90deg,
+    var(--gradient5-lightpink),
+    var(--gradient5-blue)
+  );
+}
+
+.gradient-border-gradient6::before {
+  background: linear-gradient(
+    90deg,
+    var(--gradient6-darkgreen),
+    var(--gradient6-lightgreen)
+  );
+}
+
+.gradient-border-gradient7::before {
+  background: linear-gradient(
+    90deg,
+    var(--gradient7-pink),
+    var(--gradient7-teal)
+  );
+}
+.fixed-bubble {
+  position: fixed;
+  width: 56px;
+  height: 56px;
+  border-radius: 9999px;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  background: black;
+  z-index: 40;
 }

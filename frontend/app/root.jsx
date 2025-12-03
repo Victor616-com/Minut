@@ -9,6 +9,7 @@ import {
 
 // Styles imported here will be bundled into the app automatically
 import "./app.css";
+import { AuthContextProvider } from "./context/AuthContext";
 
 // Add links to external stylesheets, fonts, etc. here
 // https://reactrouter.com/start/framework/route-module#links
@@ -38,7 +39,11 @@ export function HydrateFallback() {
 }
 
 export default function App() {
-  return <Outlet />;
+  return (
+    <AuthContextProvider>
+      <Outlet />
+    </AuthContextProvider>
+  );
 }
 
 export function ErrorBoundary({ error }) {
