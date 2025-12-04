@@ -2,10 +2,12 @@ import { useState, useRef, useEffect } from "react";
 import gsap from "gsap";
 import RadioGroup from "../UI_elements/RadioGroup";
 import Separator from "../UI_elements/Separator";
+import ToggleButton from "../UI_elements/ToggleButton";
 
 export default function AccessMenu() {
   const [open, setOpen] = useState(false);
   const [selectedTheme, setSelectedTheme] = useState("💻");
+  const [animations, setAnimations] = useState(true);
 
   const themeOptions = [
     { label: "System", value: "💻" },
@@ -84,7 +86,7 @@ export default function AccessMenu() {
         role="dialog"
         aria-modal="true"
         aria-label="Accessibility Menu"
-        className={`fixed inset-0 bg-(--bg-color) text-white z-40 flex flex-col items-center justify-center text-3xl
+        className={`fixed inset-0 bg-(--bg-color) px-5 text-white z-40 flex flex-col gap-14 items-center justify-center text-3xl
           ${open ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"}
         `}
       >
@@ -97,7 +99,7 @@ export default function AccessMenu() {
         </button>
 
         <div
-          className="flex flex-col gap-5 text-m w-full px-5"
+          className="flex flex-col gap-5 text-m w-full "
           ref={themeContainerRef}
           id="theme"
         >
@@ -108,6 +110,14 @@ export default function AccessMenu() {
             onChange={setSelectedTheme}
             className="w-full max-w-xs"
           />
+        </div>
+
+        <div className="flex flex-col gap-5 text-m w-full ">
+          <Separator>Animations</Separator>
+          <div className="flex flex-row w-full gap-3">
+            <ToggleButton enabled={animations} onChange={setAnimations} />
+            <p className="text-m text-inputcolor">Turn off all animations</p>
+          </div>
         </div>
       </nav>
     </>
