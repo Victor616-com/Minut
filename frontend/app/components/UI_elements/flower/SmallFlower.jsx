@@ -1,5 +1,6 @@
 import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
+import { useRef } from "react";
 const flower = (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -34,7 +35,20 @@ const flower = (
   </svg>
 );
 function SmallFlower() {
-  return <div className="absolute right-3 top-3">{flower}</div>;
+  const flowerRef = useRef(null);
+  useGSAP(
+    () => {
+      gsap.to(flowerRef.current, {
+        rotation: -360,
+        transformOrigin: "50% 50%",
+        repeat: -1,
+        duration: 60,
+        ease: "linear",
+      });
+    },
+    { scope: flowerRef },
+  );
+  return <div ref={flowerRef}>{flower}</div>;
 }
 
 export default SmallFlower;

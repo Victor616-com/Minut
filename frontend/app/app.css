@@ -127,7 +127,7 @@ body {
     /* Font family */
     font-family: "Eskool", sans-serif;
     /* Font size & weight */
-    font-size: 2rem; /* 1rem = 16px */
+    font-size: 1.9rem; /* 1rem = 16px */
     font-weight: 400;
     font-style: normal;
     color: var(--header-color);
@@ -174,14 +174,11 @@ body {
   }
   .gradientText2 {
     width: fit-content;
-    background: linear-gradient(
-      90deg,
-      var(--gradient2-red) 0%,
-      var(--gradient2-pink) 100%
-    );
+    background: linear-gradient(90deg, #ff4d07 0%, #e97ad7 100%);
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+    display: inline-block;
   }
   .gradientText3 {
     width: fit-content;

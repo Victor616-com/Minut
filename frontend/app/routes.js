@@ -4,5 +4,6 @@ export default [
   route("/", "routes/layout.jsx", [
     index("routes/home.jsx"),
     route("auth", "routes/authentication.jsx"),
+    route("new-project", "routes/createProject.jsx"),
   ]),
 ];

@@ -3,7 +3,7 @@ import gsap from "gsap";
 
 export default function AccessMenu() {
   const [open, setOpen] = useState(false);
-  const bubbleRef = useRef(null);
+
   const menuRef = useRef(null);
   const tlRef = useRef(null);
   const iconRef = useRef(null);
@@ -15,28 +15,18 @@ export default function AccessMenu() {
   useEffect(() => {
     tlRef.current = gsap.timeline({ paused: true });
 
-    // Bubble expand + animate color from white → black
-    tlRef.current.fromTo(
-      bubbleRef.current,
-      { scale: 0, opacity: 1 }, // white
-      {
-        scale: 90,
-        duration: 0.65,
-        ease: "power2.inOut",
-      },
-    );
     // Fade + scale out SVG icon
-    tlRef.current.to(
-      iconRef.current,
-      { opacity: 0, scale: 0.5, duration: 0.4, ease: "power2.inOut" },
-      "-=0.5", // start slightly before bubble finishes
-    );
-    // Fade in menu AFTER bubble reaches screen size
+    tlRef.current.to(iconRef.current, {
+      opacity: 0,
+      scale: 0.5,
+      duration: 0.4,
+      ease: "power2.inOut",
+    });
     tlRef.current.fromTo(
       menuRef.current,
       { opacity: 0 },
       { opacity: 1, duration: 0.35 },
-      "-=0.25", // menu fades in slightly before bubble finishes
+      "-=0.25",
     );
   }, []);
 
@@ -79,7 +69,7 @@ export default function AccessMenu() {
         role="dialog"
         aria-modal="true"
         aria-label="Accessibility Menu"
-        className={`fixed inset-0 bg-(--bg-color) text-white z-40 flex flex-col items-center justify-center text-3xl transition-opacity
+        className={`fixed inset-0 bg-(--bg-color) text-white z-40 flex flex-col items-center justify-center text-3xl
           ${open ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"}
         `}
       >
