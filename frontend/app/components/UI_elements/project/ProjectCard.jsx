@@ -12,10 +12,10 @@ function ProjectCard({ project, onClick }) {
     >
       <div className="flex flex-row items-center gap-4">
         <div
-          className="w-11 h-11 flex items-center justify-center"
+          className="w-11 h-11 flex items-end px-0.5 justify-start"
           style={{ backgroundColor: `#${project.color}` }}
         >
-          <p className="text-header2 text-black">{initials}</p>
+          <p className="text-heading2 text-black ">{initials}</p>
         </div>
         <div>
           <p className="text-m text-headercolor">{project.name}</p>

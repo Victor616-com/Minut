@@ -8,10 +8,11 @@ import gsap from "gsap";
 import Separator from "../components/UI_elements/Separator";
 import SmallFlower from "../components/UI_elements/flower/SmallFlower";
 import ProjectCard from "../components/UI_elements/project/ProjectCard";
-import Button from "../components/Button";
+import Button from "../components/UI_elements/Button";
 import ArrowIcon from "../components/icons/ArrowIcon";
 import ProtectedRoute from "./ProtectedRoute";
 import { useEffect, useState } from "react";
+import BackIcon from "../components/icons/BackIcon";
 
 export default function Home() {
   const navigate = useNavigate();
@@ -113,18 +114,18 @@ export default function Home() {
   return (
     <ProtectedRoute>
       <main className="flex flex-col gap-6 px-5 items-center">
-        <div className="small-flower absolute top-3 right-3 ">
+        <div className="small-flower absolute top-4 right-3 ">
           <SmallFlower />
         </div>
 
-        <p className="text-heading1 mt-14 w-full">
+        <p className="text-heading1 mt-20 w-full">
           Your mind deserves a moment. You tracked {""}
           <span className="gradientText2">46h 32m</span> this week.
         </p>
         <div className="flex flex-col gap-6 w-full projects">
           <Separator>Choose a project</Separator>
 
-          <div className="relative h-[190px] w-full">
+          <div className="relative h-[220px] w-full">
             {/* SCROLLABLE CONTENT */}
             <div className="overflow-y-scroll h-full flex flex-col gap-6 [&::-webkit-scrollbar]:hidden">
               {projects.map((project) => (
@@ -145,10 +146,7 @@ export default function Home() {
             />
           </div>
         </div>
-        <div className="w-full flex flex-row justify-between stats">
-          <p className="text-m text-textdark">See your stats</p>
-          <ArrowIcon direction="right" color="var(--text-color-dark)" />
-        </div>
+
         <div className="absolute bottom-17 button">
           <Button onClick={handleAddProject}>Add new project</Button>
         </div>

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import InputField from "../InputField";
-import Button from "../Button";
+import InputField from "../UI_elements/InputField";
+import Button from "../UI_elements/Button";
 import { UserAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router";
 

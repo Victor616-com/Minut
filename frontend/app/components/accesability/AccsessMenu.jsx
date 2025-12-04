@@ -1,8 +1,20 @@
 import { useState, useRef, useEffect } from "react";
 import gsap from "gsap";
+import RadioGroup from "../UI_elements/RadioGroup";
+import Separator from "../UI_elements/Separator";
 
 export default function AccessMenu() {
   const [open, setOpen] = useState(false);
+  const [selectedTheme, setSelectedTheme] = useState("💻");
+
+  const themeOptions = [
+    { label: "System", value: "💻" },
+    { label: "Light", value: "☀️" },
+    { label: "Dark", value: "🌑" },
+    { label: "High contrast", value: "🙃" },
+  ];
+
+  const themeContainerRef = useRef(null);
 
   const menuRef = useRef(null);
   const tlRef = useRef(null);
@@ -39,6 +51,9 @@ export default function AccessMenu() {
     }
   }, [open]);
 
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme-picker", selectedTheme);
+  }, [selectedTheme]);
   return (
     <>
       {/* Floating Accessibility Button */}
@@ -81,34 +96,18 @@ export default function AccessMenu() {
           ✕
         </button>
 
-        <p className="text-heading2">Accessibility Menu</p>
-
         <div
+          className="flex flex-col gap-5 text-m w-full px-5"
+          ref={themeContainerRef}
           id="theme"
-          className="flex flex-col gap-2 text-m"
-          data-theme-picker
         >
-          <label>
-            <input type="radio" name="themepicker" value="💻" defaultChecked />
-            System
-          </label>
-
-          <label>
-            <input type="radio" name="themepicker" value="☀️" />
-            Light
-          </label>
-
-          <label>
-            <input type="radio" name="themepicker" value="🌑" />
-            Dark
-          </label>
-
-          <label>
-            <input type="radio" name="themepicker" value="🙃" />
-            High contrast
-          </label>
-
-          <div className="w-[100px] h-[100px] bg-bgcolor"></div>
+          <Separator>Theme</Separator>
+          <RadioGroup
+            options={themeOptions}
+            selected={selectedTheme}
+            onChange={setSelectedTheme}
+            className="w-full max-w-xs"
+          />
         </div>
       </nav>
     </>
