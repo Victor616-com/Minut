@@ -27,7 +27,7 @@ function InputField({
 
         onChange(val);
       }}
-      className={`${className} border border-inputcolor rounded-sm w-[285px] h-[45px] outline-none text-s text-inputcolor px-5`}
+      className={`${className} border border-inputcolor rounded-sm w-[285px] h-[45px] outline-none text-m text-inputcolor px-5`}
     />
   );
 }
