@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router";
 import { UserAuth } from "../context/AuthContext";
 import { useGSAP } from "@gsap/react";
+import { supabase } from "../supabaseClient";
 import SplitText from "gsap/SplitText";
 import gsap from "gsap";
 
@@ -9,10 +10,14 @@ import SmallFlower from "../components/UI_elements/flower/SmallFlower";
 import ProjectCard from "../components/UI_elements/project/ProjectCard";
 import Button from "../components/Button";
 import ArrowIcon from "../components/icons/ArrowIcon";
+import ProtectedRoute from "./ProtectedRoute";
+import { useEffect, useState } from "react";
 
 export default function Home() {
-  const { signOut } = UserAuth();
   const navigate = useNavigate();
+
+  const { user, signOut } = UserAuth();
+  const [projects, setProjects] = useState([]);
 
   const handleSignOut = async (e) => {
     e.preventDefault();
@@ -24,6 +29,34 @@ export default function Home() {
     }
   };
 
+  // --- FETCH PROJECTS ---
+  useEffect(() => {
+    if (!user) return;
+
+    const loadProjects = async () => {
+      const { data, error } = await supabase
+        .from("projects")
+        .select("*")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        console.error(error);
+        return;
+      }
+
+      setProjects(data);
+      console.log("Fetched projects:", data); // Remove before deployment
+    };
+
+    loadProjects();
+  }, [user]);
+
+  const handleAddProject = () => {
+    navigate("/new-project");
+  };
+
+  // GSAP Animations
   useGSAP(() => {
     const tl = gsap.timeline();
 
@@ -73,58 +106,60 @@ export default function Home() {
         duration: 0.6,
         ease: "expo.out",
       },
-      "-=0.2",
+      "-=0.6",
     );
   });
 
   return (
-    <main className="flex flex-col gap-6 px-5 items-center">
-      <div className="small-flower absolute top-3 right-3 ">
-        <SmallFlower />
-      </div>
+    <ProtectedRoute>
+      <main className="flex flex-col gap-6 px-5 items-center">
+        <div className="small-flower absolute top-3 right-3 ">
+          <SmallFlower />
+        </div>
 
-      <p className="text-heading1 mt-14 w-full">
-        Your mind deserves a moment. You tracked {""}
-        <span className="gradientText2">46h 32m</span> this week.
-      </p>
-      <div className="flex flex-col gap-6 w-full projects">
-        <Separator>Choose a project</Separator>
+        <p className="text-heading1 mt-14 w-full">
+          Your mind deserves a moment. You tracked {""}
+          <span className="gradientText2">46h 32m</span> this week.
+        </p>
+        <div className="flex flex-col gap-6 w-full projects">
+          <Separator>Choose a project</Separator>
 
-        <div className="relative h-[190px] w-full">
-          {/* SCROLLABLE CONTENT */}
-          <div className="overflow-y-scroll h-full flex flex-col gap-6 [&::-webkit-scrollbar]:hidden">
-            <ProjectCard />
-            <ProjectCard />
-            <ProjectCard />
-            <ProjectCard />
-            <ProjectCard />
-            <ProjectCard />
-            <ProjectCard />
-          </div>
+          <div className="relative h-[190px] w-full">
+            {/* SCROLLABLE CONTENT */}
+            <div className="overflow-y-scroll h-full flex flex-col gap-6 [&::-webkit-scrollbar]:hidden">
+              {projects.map((project) => (
+                <ProjectCard
+                  key={project.id}
+                  project={project}
+                  onClick={() => navigate(`/project/${project.id}`)}
+                />
+              ))}
+            </div>
 
-          <div
-            className="
+            <div
+              className="
                 pointer-events-none
                 absolute bottom-0 left-0 w-full h-16
                 bg-gradient-to-t from-bgcolor to-transparent
             "
-          />
+            />
+          </div>
         </div>
-      </div>
-      <div className="w-full flex flex-row justify-between stats">
-        <p className="text-m text-textdark">See your stats</p>
-        <ArrowIcon direction="right" color="var(--text-color-dark)" />
-      </div>
-      <div className="absolute bottom-17 button">
-        <Button>Add new project</Button>
-      </div>
+        <div className="w-full flex flex-row justify-between stats">
+          <p className="text-m text-textdark">See your stats</p>
+          <ArrowIcon direction="right" color="var(--text-color-dark)" />
+        </div>
+        <div className="absolute bottom-17 button">
+          <Button onClick={handleAddProject}>Add new project</Button>
+        </div>
 
-      <p
-        className="text-m text-textlight absolute bottom-6 left-5"
-        onClick={handleSignOut}
-      >
-        Log Out
-      </p>
-    </main>
+        <p
+          className="text-m text-textlight absolute bottom-6 left-5"
+          onClick={handleSignOut}
+        >
+          Log Out
+        </p>
+      </main>
+    </ProtectedRoute>
   );
 }

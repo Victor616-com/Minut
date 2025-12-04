@@ -61,8 +61,8 @@ export const AuthContextProvider = ({ children }) => {
   }, []);
 
   // Sign Out
-  const signOut = () => {
-    const { error } = supabase.auth.signOut();
+  const signOut = async () => {
+    const { error } = await supabase.auth.signOut();
     if (error) {
       console.error("Error signing out:", error);
     }
@@ -88,6 +88,7 @@ export const AuthContextProvider = ({ children }) => {
       value={{
         session,
         setSession,
+        user: session?.user ?? null,
         signUpNewUser,
         signInUser,
         signOut,
