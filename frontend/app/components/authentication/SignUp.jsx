@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import { UserAuth } from "../../context/AuthContext";
-import InputField from "../InputField";
-import Button from "../Button";
+import InputField from "../UI_elements/InputField";
+import Button from "../UI_elements/Button";
 
 function SignUp({ toggleAuthState }) {
   const [email, setEmail] = useState("");

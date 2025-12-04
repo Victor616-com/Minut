@@ -8,10 +8,11 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import SplitText from "gsap/SplitText";
 
-import InputField from "../components/InputField.jsx";
-import Button from "../components/Button.jsx";
+import InputField from "../components/UI_elements/InputField.jsx";
+import Button from "../components/UI_elements/Button.jsx";
 import Separator from "../components/UI_elements/Separator.jsx";
 import SmallFlower from "../components/UI_elements/flower/SmallFlower.jsx";
+import BackIcon from "../components/icons/BackIcon.jsx";
 
 export default function CreateProject() {
   const { user } = UserAuth(); // assume this returns user object with id
@@ -125,9 +126,10 @@ export default function CreateProject() {
 
   return (
     <div className="flex flex-col gap-8 px-5 items-center w-full">
-      <div className="small-flower absolute top-3 right-3 ">
+      <div className="small-flower absolute top-4 right-3 ">
         <SmallFlower />
       </div>
+      <BackIcon />
       <h2 className="text-heading1 mt-20">
         Rest isn’t a luxury. It’s part of doing your best work.
       </h2>
