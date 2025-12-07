@@ -6,21 +6,6 @@ import { UserAuth } from "../context/AuthContext";
 import Button from "../components/UI_elements/Button.jsx";
 import Separator from "../components/UI_elements/Separator.jsx";
 
-/*
-Behavior summary:
-- On mount, we create a sessions row (user_id, project_id, planned_seconds, goal_minutes, system)
-- Timer state:
-  - workMode: true when work, false while on break
-  - cycleSeconds: seconds elapsed inside current work/break segment
-  - elapsedWork: total tracked work seconds for session
-  - breaksCount: number of breaks started (we also create session_breaks rows)
-- Every break start -> insert session_breaks (taken default false)
-- If user taps "I took the break" -> update last session_breaks to taken=true and set break_ended_at
-- If break ends without tap -> set taken=false and update break_ended_at
-- Periodically (every 10s) save tracked_seconds and breaks_count to sessions
-- Buttons: Restart (reset local state), Pause/Play, End session (final save + status completed)
-*/
-
 export default function sessionView() {
   const { projectId } = useParams();
   const location = useLocation();
