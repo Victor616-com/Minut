@@ -9,10 +9,8 @@ import Separator from "../components/UI_elements/Separator";
 import SmallFlower from "../components/UI_elements/flower/SmallFlower";
 import ProjectCard from "../components/UI_elements/project/ProjectCard";
 import Button from "../components/UI_elements/Button";
-import ArrowIcon from "../components/icons/ArrowIcon";
 import ProtectedRoute from "./ProtectedRoute";
 import { useEffect, useState } from "react";
-import BackIcon from "../components/icons/BackIcon";
 
 export default function Home() {
   const navigate = useNavigate();

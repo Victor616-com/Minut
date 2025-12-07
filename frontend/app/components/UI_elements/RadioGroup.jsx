@@ -20,7 +20,7 @@ export default function RadioGroup({ options, selected, onChange, className }) {
           />
           {/* Custom radio */}
           <span
-            className={`w-5 h-5 flex-shrink-0 rounded-full border-2 border-inputcolor flex items-center justify-center
+            className={`w-5 h-5 shrink-0 rounded-full border-2 border-inputcolor flex items-center justify-center
             ${selected === option.value ? "" : "bg-transparent"} transition-all`}
           >
             {/* Inner dot when selected */}
