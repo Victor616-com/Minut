@@ -28,15 +28,6 @@ export default function ProjectView() {
     { value: "25/5", label: "25/5 system" },
   ];
 
-  const formatTime = (mins) => {
-    const h = Math.floor(mins / 60);
-    const m = mins % 60;
-
-    if (h === 0) return `${m}m`;
-    if (m === 0) return `${h}h`;
-    return `${h}h ${m}m`;
-  };
-
   //Fetch project
   useEffect(() => {
     const fetchProject = async () => {
@@ -59,8 +50,10 @@ export default function ProjectView() {
   }, [projectId]);
 
   const handleStartSession = () => {
-    // Navigate to session page, e.g., `/project/:id/session`
-    navigate(`/project/${projectId}/session`);
+    // Navigate to session page
+    navigate(`/project/${projectId}/session`, {
+      state: { sessionLength, sessionType },
+    });
   };
 
   // GSAP Animations
@@ -161,9 +154,9 @@ export default function ProjectView() {
         <Separator>How long is the session?</Separator>
 
         <CustomSlider
-          min={30}
+          min={1} // Change to 30 after testing
           max={600}
-          step={10}
+          step={1} // Change to 10 after testing
           initial={sessionLength}
           onChange={(val) => setSessionLength(val)}
         />
