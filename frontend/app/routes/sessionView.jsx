@@ -105,58 +105,62 @@ export default function sessionView() {
 
   // Timer tick
   useEffect(() => {
-    if (!sessionId) return; // wait for both to be created
-    if (!isRunning) return;
+    if (!sessionId || !isRunning) return;
 
-    if (!tickRef.current) {
-      tickRef.current = setInterval(() => {
-        setCycleSeconds((prevCycle) => {
-          const nextCycle = prevCycle + 1;
+    // start interval
+    tickRef.current = setInterval(() => {
+      // increment total elapsed seconds
+      setElapsedWork((prevElapsed) => {
+        const nextElapsed = prevElapsed + 1;
 
-          // increment total elapsed seconds including breaks
-          setElapsedWork((prevElapsed) => {
-            const newElapsed = prevElapsed + 1;
-
-            if (newElapsed >= plannedSeconds) {
-              handleEndSession();
-            }
-
-            return newElapsed;
-          });
-
-          // handle work/break transitions
-          if (workMode && nextCycle >= workInterval) {
-            startBreak();
-            return 0;
-          }
-
-          if (!workMode && nextCycle >= breakDuration) {
-            endBreakAutomatically();
-            return 0;
-          }
-
-          return nextCycle;
-        });
-
-        // periodic save every 10s
-        if (Date.now() - lastSaveRef.current > 10000) {
-          saveProgressToDb();
-          lastSaveRef.current = Date.now();
+        if (nextElapsed >= plannedSeconds) {
+          handleEndSession(); // session complete
+          return prevElapsed;
         }
-      }, 1000);
-    }
+
+        return nextElapsed;
+      });
+
+      // increment current segment seconds
+      setCycleSeconds((prevCycle) => {
+        const nextCycle = prevCycle + 1;
+
+        if (workMode && nextCycle >= workInterval) {
+          startBreak(); // flip mode and reset cycle inside startBreak
+          return 0;
+        }
+
+        if (!workMode && nextCycle >= breakDuration) {
+          endBreakAutomatically(); // flip mode back
+          return 0;
+        }
+
+        return nextCycle;
+      });
+
+      // periodic save every 10s
+      if (Date.now() - lastSaveRef.current > 10000) {
+        saveProgressToDb();
+        lastSaveRef.current = Date.now();
+      }
+    }, 1000);
 
     return () => {
-      if (tickRef.current) {
-        clearInterval(tickRef.current);
-        tickRef.current = null;
-      }
+      clearInterval(tickRef.current);
+      tickRef.current = null;
     };
-  }, [sessionId, isRunning, workMode, plannedSeconds]);
+  }, [
+    sessionId,
+    isRunning,
+    workMode,
+    plannedSeconds,
+    workInterval,
+    breakDuration,
+  ]);
 
   // Start a break: create a session_breaks row and flip mode
   const startBreak = async () => {
-    if (breakStarting.current) return; // prevent duplicates
+    if (breakStarting.current) return;
     breakStarting.current = true;
 
     setWorkMode(false);
@@ -166,19 +170,16 @@ export default function sessionView() {
     try {
       const { data, error } = await supabase
         .from("session_breaks")
-        .insert([
-          {
-            session_id: sessionId,
-            user_id: user.id,
-            break_started_at: new Date().toISOString(),
-            taken: false,
-          },
-        ])
+        .insert({
+          session_id: sessionId,
+          user_id: user.id,
+          break_started_at: new Date().toISOString(),
+          taken: false,
+        })
         .select()
         .single();
 
       if (error) throw error;
-
       setCurrentBreakRowId(data.id);
     } catch (err) {
       console.warn("Failed to create break row:", err);
@@ -207,27 +208,20 @@ export default function sessionView() {
 
   // If break ended without the user tapping
   const endBreakAutomatically = async () => {
-    if (!currentBreakRowId) {
-      // no break row — just flip back
-      setWorkMode(true);
-      setCycleSeconds(0);
-      return;
+    if (currentBreakRowId) {
+      try {
+        await supabase
+          .from("session_breaks")
+          .update({ break_ended_at: new Date().toISOString() })
+          .eq("id", currentBreakRowId);
+      } catch (err) {
+        console.warn("Failed to finalize break row:", err);
+      }
+      setCurrentBreakRowId(null);
     }
 
-    try {
-      await supabase
-        .from("session_breaks")
-        .update({
-          break_ended_at: new Date().toISOString(),
-        })
-        .eq("id", currentBreakRowId);
-    } catch (err) {
-      console.warn("Failed to finalize break row:", err);
-    } finally {
-      setCurrentBreakRowId(null);
-      setWorkMode(true);
-      setCycleSeconds(0);
-    }
+    setWorkMode(true);
+    setCycleSeconds(0);
   };
 
   // Periodically save tracked progress
