@@ -288,7 +288,7 @@ export default function sessionView() {
     setIsRunning(false);
 
     if (!sessionId) {
-      navigate(-1);
+      navigate("/");
       return;
     }
 
