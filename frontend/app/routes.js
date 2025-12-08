@@ -6,6 +6,6 @@ export default [
     route("auth", "routes/authentication.jsx"),
     route("new-project", "routes/createProject.jsx"),
     route("project/:projectId", "routes/projectView.jsx"),
-    route("project/:projectId/session", "routes/sessionView.jsx"),
+    route("project/:projectId/session", "routes/SessionView.jsx"),
   ]),
 ];
