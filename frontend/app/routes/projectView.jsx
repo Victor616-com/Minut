@@ -52,7 +52,7 @@ export default function ProjectView() {
   const handleStartSession = () => {
     // Navigate to session page
     navigate(`/project/${projectId}/session`, {
-      state: { sessionLength, sessionType },
+      state: { sessionLength, sessionType, project },
     });
   };
 

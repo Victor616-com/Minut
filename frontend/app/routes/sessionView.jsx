@@ -5,6 +5,10 @@ import { supabase } from "../supabaseClient";
 import { UserAuth } from "../context/AuthContext";
 import Button from "../components/UI_elements/Button.jsx";
 import Separator from "../components/UI_elements/Separator.jsx";
+import SmallFlower from "../components/UI_elements/flower/SmallFlower.jsx";
+import BackIcon from "../components/icons/BackIcon.jsx";
+import ProgressBar from "../components/UI_elements/session/ProgressBar.jsx";
+import Clock from "../components/UI_elements/session/clock/Clock.jsx";
 
 export default function sessionView() {
   const { projectId } = useParams();
@@ -18,6 +22,7 @@ export default function sessionView() {
 
   // Values passed from ProjectView via navigate state or fallback
   const passed = location.state || {};
+  const projectName = passed.project.name || null;
   const initialMinutes = passed.sessionLength ?? 30; // default 30 min
   const initialSystem = passed.sessionType ?? "20/20/20";
 
@@ -316,53 +321,31 @@ export default function sessionView() {
 
   // derive the UI timers
   const segmentTotal = workMode ? workInterval : breakDuration;
-  const segmentRemaining = Math.max(segmentTotal - cycleSeconds, 0);
-  const totalRemaining = Math.max(plannedSeconds - elapsedWork, 0);
-  const progressPercent = Math.min(
-    100,
-    Math.round((elapsedWork / plannedSeconds) * 100),
-  );
 
   return (
-    <div className="flex flex-col gap-6 px-5 items-center w-full mt-8">
-      <Separator>Session</Separator>
-
+    <div className="flex flex-col gap-6 px-5 items-center w-full">
+      <BackIcon />
+      <div className="small-flower absolute top-4 right-3 ">
+        <SmallFlower />
+      </div>
+      <p className="text-heading1 mt-20 w-full">
+        You spent <span className="gradientText2">5h 23m</span> working on {""}
+        <span className="gradientText7">{projectName}</span>.
+      </p>
       <div className="w-full flex flex-col gap-4">
-        <div className="w-full flex justify-between items-center">
-          <div>
-            <h2 className="text-heading2">{sessionRow.system}</h2>
-            <p className="text-sm text-textlight">
-              Goal: {plannedMinutes} minutes • {sessionRow.system}
-            </p>
-          </div>
-          <div className="text-right">
-            <p className="text-sm text-textdark">Total tracked</p>
-            <p className="text-lg text-heading2">{fmt(elapsedWork)}</p>
-          </div>
-        </div>
-
         {/* progress bar */}
-        <div className="w-full h-3 bg-gray-200 rounded overflow-hidden">
-          <div
-            className="h-full bg-green-500"
-            style={{ width: `${progressPercent}%` }}
-          />
-        </div>
+        <ProgressBar
+          elapsedWork={elapsedWork}
+          plannedSeconds={plannedSeconds}
+          plannedMinutes={plannedMinutes}
+        />
 
-        {/* segment timer / main timer */}
-        <div className="w-full flex gap-4 items-center mt-2">
-          <div className="flex-1">
-            <p className="text-xs text-textlight">
-              {workMode ? "Work time remaining" : "Break time remaining"}
-            </p>
-            <p className="text-m font-mono">{fmt(segmentRemaining)}</p>
-          </div>
-
-          <div className="w-32 text-center">
-            <p className="text-xs text-textlight">Session remaining</p>
-            <p className="text-m font-mono">{fmt(totalRemaining)}</p>
-          </div>
-        </div>
+        <Clock
+          segmentTotal={segmentTotal}
+          isRunning={isRunning}
+          workMode={workMode}
+          cycleSeconds={cycleSeconds}
+        />
 
         {/* If on break, show tap button to mark break as taken */}
         {!workMode && (
