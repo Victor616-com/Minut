@@ -288,7 +288,7 @@ export default function sessionView() {
     setIsRunning(false);
 
     if (!sessionId) {
-      navigate("/");
+      navigate(-1);
       return;
     }
 
@@ -317,7 +317,7 @@ export default function sessionView() {
         .eq("id", sessionId);
 
       // navigate back to project page or home
-      navigate(`/project/${projectId}`);
+      navigate(`/`);
     } catch (err) {
       console.error("Failed to end session:", err);
       alert("Could not finish session, please try again.");
