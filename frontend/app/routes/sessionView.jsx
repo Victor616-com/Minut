@@ -6,6 +6,7 @@ import { UserAuth } from "../context/AuthContext";
 
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
+import SplitText from "gsap/SplitText";
 
 import Button from "../components/UI_elements/Button.jsx";
 import SmallFlower from "../components/UI_elements/flower/SmallFlower.jsx";
@@ -28,7 +29,11 @@ export default function SessionView() {
   // Animation refs
   const backIconRef = useRef(null);
   const progressBarRef = useRef(null);
+  const progressBarRefInside = useRef(null);
   const clockRef = useRef(null);
+  const headerRef = useRef(null);
+  const breakTextRef = useRef(null);
+  const breakFlowerRef = useRef(null);
 
   // Values passed from ProjectView via navigate state or fallback
   const passed = location.state || {};
@@ -66,7 +71,7 @@ export default function SessionView() {
 
   const plannedMinutes = initialMinutes;
   const plannedSeconds = plannedMinutes * 60;
-  const workInterval = 10; //getWorkInterval(initialSystem);
+  const workInterval = getWorkInterval(initialSystem);
   const breakDuration = getBreakDuration(initialSystem);
 
   // Create session row on mount
@@ -319,11 +324,74 @@ export default function SessionView() {
     }
   };
 
+  // Initial animations that run on load
+  useGSAP(() => {
+    if (
+      !smallFlowerRef.current ||
+      !headerRef.current ||
+      !progressBarRef.current ||
+      !clockRef.current
+    ) {
+      return;
+    }
+    const tl = gsap.timeline();
+
+    // Scale up the SmallFlower
+    tl.from(smallFlowerRef.current, {
+      scale: 0,
+      opacity: 0,
+      duration: 0.8,
+      ease: "expo.out",
+    });
+
+    // Then animate split text
+    const split = new SplitText(headerRef.current, {
+      type: "lines",
+      linesClass: "split-lines",
+    });
+
+    tl.from(split.lines, {
+      yPercent: 100,
+      opacity: 0,
+      duration: 1.3,
+      ease: "expo.out",
+      stagger: 0.06,
+    });
+    tl.from(
+      progressBarRef.current,
+      {
+        opacity: 0,
+        duration: 0.6,
+        ease: "expo.out",
+      },
+      "-=0.8",
+    ); // Start 0.8s earlier
+    tl.from(
+      clockRef.current,
+      {
+        opacity: 0,
+        duration: 0.6,
+        ease: "expo.out",
+      },
+      "-=0.6",
+    ); // Start 0.8s earlier
+    tl.from(
+      ".buttons",
+      {
+        opacity: 0,
+        duration: 0.6,
+        ease: "expo.out",
+      },
+      "-=0.4",
+    );
+  }, []);
+
+  // Animations for breaks
   useEffect(() => {
     if (
       !smallFlowerRef.current ||
       !backIconRef.current ||
-      !progressBarRef.current
+      !progressBarRefInside.current
     )
       return;
     const tl = gsap.timeline({
@@ -338,7 +406,7 @@ export default function SessionView() {
       tl.to(
         [
           backIconRef.current,
-          progressBarRef.current,
+          progressBarRefInside.current,
           smallFlowerRef.current,
           ".header",
         ],
@@ -347,12 +415,30 @@ export default function SessionView() {
         },
       );
       tl.to(clockRef.current, { y: 60 }, "<");
+      tl.from(breakFlowerRef.current, { scale: 0 });
+      // Then animate split text
+      const split = new SplitText(breakTextRef.current, {
+        type: "lines",
+        linesClass: "split-lines",
+      });
+
+      tl.from(
+        split.lines,
+        {
+          yPercent: 100,
+          opacity: 0,
+          duration: 1.3,
+          ease: "expo.out",
+          stagger: 0.06,
+        },
+        "-=0.5",
+      );
     } else {
       // fade back in only the icon (or both if you want)
       tl.to(
         [
           backIconRef.current,
-          progressBarRef.current,
+          progressBarRefInside.current,
           smallFlowerRef.current,
           ".header",
         ],
@@ -363,10 +449,6 @@ export default function SessionView() {
       tl.to(clockRef.current, { y: 0 }, "<");
     }
   }, [workMode]);
-
-  if (loading || !sessionRow) {
-    return <div className="p-6">Loading session...</div>;
-  }
 
   // derive the UI timers
   const segmentTotal = workMode ? workInterval : breakDuration; // move this to Clock component later
@@ -380,25 +462,35 @@ export default function SessionView() {
       >
         <SmallFlower />
       </div>
-      <p className="text-heading1 mt-20 w-full header">
+      <p className="text-heading1 mt-20 w-full header" ref={headerRef}>
         You spent <span className="gradientText2">5h 23m</span> working on {""}
         <span className="gradientText7">{projectName}</span>.
       </p>
       <div className="w-full flex flex-col gap-4">
         {/* progress bar */}
-        <ProgressBar
-          elapsedWork={elapsedWork}
-          plannedSeconds={plannedSeconds}
-          plannedMinutes={plannedMinutes}
-          ref={progressBarRef}
-        />
+        <div className="w-full progress-bar" ref={progressBarRef}>
+          <div className="w-full" ref={progressBarRefInside}>
+            <ProgressBar
+              elapsedWork={elapsedWork}
+              plannedSeconds={plannedSeconds}
+              plannedMinutes={plannedMinutes}
+            />
+          </div>
+        </div>
         {!workMode && (
-          <div className="absolute bottom-60 left-1/2 -translate-x-1/2">
+          <div
+            className="absolute bottom-60 left-1/2 -translate-x-1/2"
+            ref={breakFlowerRef}
+          >
             <BigFlower breakTaken={breakTaken} />
           </div>
         )}
+
         {!workMode && (
-          <p className="absolute top-10 left-0 text-heading1 w-full px-5">
+          <p
+            className="absolute top-10 left-0 text-heading1 w-full px-5"
+            ref={breakTextRef}
+          >
             {breakTaken
               ? "Relax your shoulders. They’ve been carrying enough."
               : "Tap the screen if you are taking a break."}
@@ -433,7 +525,7 @@ export default function SessionView() {
           */}
 
         {/* Controls */}
-        <div className="flex gap-4 mt-6 absolute bottom-16">
+        <div className="flex gap-4 mt-6 absolute bottom-16 buttons z-30">
           <Button onClick={handleRestart}>Restart</Button>
           <Button onClick={togglePause}>
             {isRunning ? "Pause" : "Resume"}
