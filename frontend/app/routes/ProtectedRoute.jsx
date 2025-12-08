@@ -3,11 +3,17 @@ import { UserAuth } from "../context/AuthContext";
 import { Navigate } from "react-router";
 
 const ProtectedRoute = ({ children }) => {
-  const { session } = UserAuth();
+  const { session, user } = UserAuth();
+
   if (session === undefined) {
     return <div>Loading...</div>;
   }
-  return <>{session ? <>{children}</> : <Navigate to="/auth" />}</>;
+
+  if (!user) {
+    return <Navigate to="/auth" replace />;
+  }
+
+  return <>{children}</>;
 };
 
 export default ProtectedRoute;

@@ -51,14 +51,6 @@ export const AuthContextProvider = ({ children }) => {
       console.log("Error signing in:", error);
     }
   };
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-    });
-    supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-    });
-  }, []);
 
   // Sign Out
   const signOut = async () => {
@@ -79,9 +71,7 @@ export const AuthContextProvider = ({ children }) => {
       },
     );
 
-    return () => {
-      subscription?.unsubscribe();
-    };
+    return () => subscription?.unsubscribe();
   }, []);
   return (
     <AuthContext.Provider
