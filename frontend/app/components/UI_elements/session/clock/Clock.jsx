@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import Timer from "./Timer";
 
-function Clock({ cycleSeconds, segmentTotal, isRunning, workMode }) {
+function Clock({ cycleSeconds, segmentTotal, isRunning, workMode, ref }) {
   const circleRef = useRef(null);
   const tlRef = useRef(null);
   const radius = 80;
@@ -59,7 +59,7 @@ function Clock({ cycleSeconds, segmentTotal, isRunning, workMode }) {
   }, [segmentRemaining, workMode]);
 
   return (
-    <div className="relative flex items-center justify-center w-full">
+    <div className="relative flex items-center justify-center w-full" ref={ref}>
       <svg width={180} height={180} className="-rotate-90 clock">
         {/* Background Circle */}
         <circle

@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from "react";
 
-function ProgressBar({ elapsedWork, plannedSeconds, plannedMinutes }) {
+function ProgressBar({ elapsedWork, plannedSeconds, plannedMinutes, ref }) {
   const [clampedPercent, setClampedPercent] = useState(0);
   const barRef = useRef(null);
 
@@ -39,7 +39,7 @@ function ProgressBar({ elapsedWork, plannedSeconds, plannedMinutes }) {
   }, [progressPercent]);
 
   return (
-    <div className="flex flex-col w-full gap-2">
+    <div className="flex flex-col w-full gap-2" ref={ref}>
       <div className="flex flex-row w-full justify-between">
         <p className="text-s text-inputcolor">Session Objective</p>
         <p className="text-s text-textlight">{objectiveLength}</p>
