@@ -154,9 +154,9 @@ export default function ProjectView() {
         <Separator>How long is the session?</Separator>
 
         <CustomSlider
-          min={1} // Change to 30 after testing
+          min={30} // Change to 1 while testing
           max={600}
-          step={1} // Change to 10 after testing
+          step={10} // Change to 1 while testing
           initial={sessionLength}
           onChange={(val) => setSessionLength(val)}
         />

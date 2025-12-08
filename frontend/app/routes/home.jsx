@@ -20,11 +20,20 @@ export default function Home() {
 
   const handleSignOut = async (e) => {
     e.preventDefault();
+
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+    if (!session) {
+      console.warn("No active session to sign out.");
+      return;
+    }
+
     try {
-      await signOut();
+      await supabase.auth.signOut();
       navigate("/auth");
     } catch (err) {
-      console.error(err);
+      console.error("Error signing out:", err);
     }
   };
 

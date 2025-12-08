@@ -8,10 +8,12 @@ function Button({
   className = "",
   disabled = false,
   loadingText = "Loading...",
-  gradient = "white", // <--- new prop
+  gradient = "white",
+  ref,
 }) {
   return (
     <button
+      ref={ref}
       onClick={onClick}
       disabled={disabled || loading}
       type={type}
