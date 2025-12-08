@@ -15,7 +15,7 @@ import ProgressBar from "../components/UI_elements/session/ProgressBar.jsx";
 import Clock from "../components/UI_elements/session/clock/Clock.jsx";
 import BigFlower from "../components/UI_elements/flower/BigFlower.jsx";
 
-export default function SessionView() {
+export default function sessionView() {
   const { projectId } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
