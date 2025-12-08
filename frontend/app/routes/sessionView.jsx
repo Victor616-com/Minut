@@ -3,14 +3,19 @@ import React, { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router";
 import { supabase } from "../supabaseClient";
 import { UserAuth } from "../context/AuthContext";
+
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
+import SplitText from "gsap/SplitText";
+
 import Button from "../components/UI_elements/Button.jsx";
-import Separator from "../components/UI_elements/Separator.jsx";
 import SmallFlower from "../components/UI_elements/flower/SmallFlower.jsx";
 import BackIcon from "../components/icons/BackIcon.jsx";
 import ProgressBar from "../components/UI_elements/session/ProgressBar.jsx";
 import Clock from "../components/UI_elements/session/clock/Clock.jsx";
+import BigFlower from "../components/UI_elements/flower/BigFlower.jsx";
 
-export default function sessionView() {
+export default function SessionView() {
   const { projectId } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
@@ -19,6 +24,16 @@ export default function sessionView() {
   // Refs to avoid multiple creations
   const createdOnce = useRef(false);
   const breakStarting = useRef(false);
+  const smallFlowerRef = useRef(null);
+
+  // Animation refs
+  const backIconRef = useRef(null);
+  const progressBarRef = useRef(null);
+  const progressBarRefInside = useRef(null);
+  const clockRef = useRef(null);
+  const headerRef = useRef(null);
+  const breakTextRef = useRef(null);
+  const breakFlowerRef = useRef(null);
 
   // Values passed from ProjectView via navigate state or fallback
   const passed = location.state || {};
@@ -36,6 +51,7 @@ export default function sessionView() {
   const [breaksCount, setBreaksCount] = useState(0);
   const [isRunning, setIsRunning] = useState(true); // pause/play
   const [currentBreakRowId, setCurrentBreakRowId] = useState(null); // id for last inserted break row
+  const [breakTaken, setBreakTaken] = useState(false);
 
   const tickRef = useRef(null);
   const lastSaveRef = useRef(Date.now());
@@ -55,7 +71,7 @@ export default function sessionView() {
 
   const plannedMinutes = initialMinutes;
   const plannedSeconds = plannedMinutes * 60;
-  const workInterval = 10; //getWorkInterval(initialSystem);
+  const workInterval = getWorkInterval(initialSystem);
   const breakDuration = getBreakDuration(initialSystem);
 
   // Create session row on mount
@@ -153,6 +169,7 @@ export default function sessionView() {
     if (breakStarting.current) return;
     breakStarting.current = true;
 
+    setBreakTaken(false);
     setWorkMode(false);
     setCycleSeconds(0);
     setBreaksCount((b) => b + 1);
@@ -190,7 +207,7 @@ export default function sessionView() {
         })
         .eq("id", currentBreakRowId);
       console.log("Marked break as taken");
-      // break continues normally, timer keeps counting
+      setBreakTaken(true);
     } catch (err) {
       console.warn("Failed to mark break taken:", err);
     }
@@ -307,47 +324,189 @@ export default function sessionView() {
     }
   };
 
-  // Helper to format seconds to mm:ss
-  const fmt = (s) => {
-    if (s < 0) s = 0;
-    const mm = Math.floor(s / 60);
-    const ss = s % 60;
-    return `${String(mm).padStart(2, "0")}:${String(ss).padStart(2, "0")}`;
-  };
+  // Initial animations that run on load
+  useGSAP(() => {
+    if (
+      !smallFlowerRef.current ||
+      !headerRef.current ||
+      !progressBarRef.current ||
+      !clockRef.current
+    ) {
+      return;
+    }
+    const tl = gsap.timeline();
 
-  if (loading || !sessionRow) {
-    return <div className="p-6">Loading session...</div>;
-  }
+    // Scale up the SmallFlower
+    tl.from(smallFlowerRef.current, {
+      scale: 0,
+      opacity: 0,
+      duration: 0.8,
+      ease: "expo.out",
+    });
+
+    // Then animate split text
+    const split = new SplitText(headerRef.current, {
+      type: "lines",
+      linesClass: "split-lines",
+    });
+
+    tl.from(split.lines, {
+      yPercent: 100,
+      opacity: 0,
+      duration: 1.3,
+      ease: "expo.out",
+      stagger: 0.06,
+    });
+    tl.from(
+      progressBarRef.current,
+      {
+        opacity: 0,
+        duration: 0.6,
+        ease: "expo.out",
+      },
+      "-=0.8",
+    ); // Start 0.8s earlier
+    tl.from(
+      clockRef.current,
+      {
+        opacity: 0,
+        duration: 0.6,
+        ease: "expo.out",
+      },
+      "-=0.6",
+    ); // Start 0.8s earlier
+    tl.from(
+      ".buttons",
+      {
+        opacity: 0,
+        duration: 0.6,
+        ease: "expo.out",
+      },
+      "-=0.4",
+    );
+  }, []);
+
+  // Animations for breaks
+  useEffect(() => {
+    if (
+      !smallFlowerRef.current ||
+      !backIconRef.current ||
+      !progressBarRefInside.current
+    )
+      return;
+    const tl = gsap.timeline({
+      defaults: {
+        duration: 0.8,
+        ease: "expo.out",
+      },
+    });
+
+    if (!workMode) {
+      // fade out both
+      tl.to(
+        [
+          backIconRef.current,
+          progressBarRefInside.current,
+          smallFlowerRef.current,
+          ".header",
+        ],
+        {
+          opacity: 0,
+        },
+      );
+      tl.to(clockRef.current, { y: 60 }, "<");
+      tl.from(breakFlowerRef.current, { scale: 0 });
+      // Then animate split text
+      const split = new SplitText(breakTextRef.current, {
+        type: "lines",
+        linesClass: "split-lines",
+      });
+
+      tl.from(
+        split.lines,
+        {
+          yPercent: 100,
+          opacity: 0,
+          duration: 1.3,
+          ease: "expo.out",
+          stagger: 0.06,
+        },
+        "-=0.5",
+      );
+    } else {
+      // fade back in only the icon (or both if you want)
+      tl.to(
+        [
+          backIconRef.current,
+          progressBarRefInside.current,
+          smallFlowerRef.current,
+          ".header",
+        ],
+        {
+          opacity: 1,
+        },
+      );
+      tl.to(clockRef.current, { y: 0 }, "<");
+    }
+  }, [workMode]);
 
   // derive the UI timers
-  const segmentTotal = workMode ? workInterval : breakDuration;
+  const segmentTotal = workMode ? workInterval : breakDuration; // move this to Clock component later
 
   return (
-    <div className="flex flex-col gap-6 px-5 items-center w-full">
-      <BackIcon />
-      <div className="small-flower absolute top-4 right-3 ">
+    <div className="flex flex-col gap-10 px-5 items-center w-full">
+      <BackIcon ref={backIconRef} />
+      <div
+        className="small-flower absolute top-4 right-3 "
+        ref={smallFlowerRef}
+      >
         <SmallFlower />
       </div>
-      <p className="text-heading1 mt-20 w-full">
+      <p className="text-heading1 mt-20 w-full header" ref={headerRef}>
         You spent <span className="gradientText2">5h 23m</span> working on {""}
         <span className="gradientText7">{projectName}</span>.
       </p>
       <div className="w-full flex flex-col gap-4">
         {/* progress bar */}
-        <ProgressBar
-          elapsedWork={elapsedWork}
-          plannedSeconds={plannedSeconds}
-          plannedMinutes={plannedMinutes}
-        />
+        <div className="w-full progress-bar" ref={progressBarRef}>
+          <div className="w-full" ref={progressBarRefInside}>
+            <ProgressBar
+              elapsedWork={elapsedWork}
+              plannedSeconds={plannedSeconds}
+              plannedMinutes={plannedMinutes}
+            />
+          </div>
+        </div>
+        {!workMode && (
+          <div
+            className="absolute bottom-60 left-1/2 -translate-x-1/2"
+            ref={breakFlowerRef}
+          >
+            <BigFlower breakTaken={breakTaken} />
+          </div>
+        )}
 
-        <Clock
-          segmentTotal={segmentTotal}
-          isRunning={isRunning}
-          workMode={workMode}
-          cycleSeconds={cycleSeconds}
-        />
+        {!workMode && (
+          <p
+            className="absolute top-10 left-0 text-heading1 w-full px-5"
+            ref={breakTextRef}
+          >
+            {breakTaken
+              ? "Relax your shoulders. They’ve been carrying enough."
+              : "Tap the screen if you are taking a break."}
+          </p>
+        )}
+        <div className="absolute bottom-40 w-full left-0">
+          <Clock
+            segmentTotal={segmentTotal}
+            isRunning={isRunning}
+            workMode={workMode}
+            cycleSeconds={cycleSeconds}
+            ref={clockRef}
+          />
+        </div>
 
-        {/* If on break, show tap button to mark break as taken */}
+        {/* If on break, show tap button to mark break as taken 
         {!workMode && (
           <div className="mt-4">
             <p className="mb-2 text-sm text-textlight">On break</p>
@@ -363,9 +522,10 @@ export default function sessionView() {
             </p>
           </div>
         )}
+          */}
 
         {/* Controls */}
-        <div className="flex gap-4 mt-6">
+        <div className="flex gap-4 mt-6 absolute bottom-16 buttons z-30">
           <Button onClick={handleRestart}>Restart</Button>
           <Button onClick={togglePause}>
             {isRunning ? "Pause" : "Resume"}
@@ -373,6 +533,19 @@ export default function sessionView() {
           <Button onClick={handleEndSession}>End</Button>
         </div>
       </div>
+
+      {/*Overlay to capture taps during break*/}
+      {!workMode && (
+        <div
+          className="fixed inset-0 z-20"
+          onClick={() => {
+            // Prevent clicks on buttons
+            if (!event.target.closest("button")) {
+              userTookBreak();
+            }
+          }}
+        />
+      )}
     </div>
   );
 }

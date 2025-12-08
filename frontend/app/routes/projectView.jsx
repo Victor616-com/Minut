@@ -132,7 +132,7 @@ export default function ProjectView() {
         const buttonRect = button.getBoundingClientRect();
 
         // Calculate vertical distance to top of button
-        return buttonRect.top - flowerRect.top - 22; // -10px offset
+        return buttonRect.top - flowerRect.top - 22;
       },
       duration: 1,
       ease: "power2.inOut",

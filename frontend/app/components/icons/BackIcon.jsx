@@ -16,11 +16,15 @@ const backIconSVG = (
     />
   </svg>
 );
-function BackIcon() {
+function BackIcon({ ref }) {
   const navigate = useNavigate();
 
   return (
-    <button onClick={() => navigate(-1)} className="absolute left-3 top-3">
+    <button
+      onClick={() => navigate(-1)}
+      className="absolute left-3 top-3"
+      ref={ref}
+    >
       {backIconSVG}
     </button>
   );
