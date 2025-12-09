@@ -14,6 +14,7 @@ import BackIcon from "../components/icons/BackIcon.jsx";
 import ProgressBar from "../components/UI_elements/session/ProgressBar.jsx";
 import Clock from "../components/UI_elements/session/clock/Clock.jsx";
 import BigFlower from "../components/UI_elements/flower/BigFlower.jsx";
+import SessionControlButton from "../components/UI_elements/session/buttons/SessionControlButton.jsx";
 
 export default function sessionView() {
   const { projectId } = useParams();
@@ -525,12 +526,27 @@ export default function sessionView() {
           */}
 
         {/* Controls */}
-        <div className="flex gap-4 mt-6 absolute bottom-16 buttons z-30">
+        <div className="flex w-full justify-center left-0 gap-4 mt-6 absolute bottom-16 buttons z-30">
+          {/* Old Controls 
           <Button onClick={handleRestart}>Restart</Button>
           <Button onClick={togglePause}>
             {isRunning ? "Pause" : "Resume"}
           </Button>
           <Button onClick={handleEndSession}>End</Button>
+          */}
+          <div className="relative">
+            <SessionControlButton
+              variant="restart"
+              className="absolute right-22"
+              onClick={handleRestart}
+            />
+            <SessionControlButton variant="pause" onClick={togglePause} />
+            <SessionControlButton
+              variant="end"
+              className="absolute left-23 bottom-2"
+              onClick={handleEndSession}
+            />
+          </div>
         </div>
       </div>
 
