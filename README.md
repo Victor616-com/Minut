@@ -1,72 +1,48 @@
-# A "chatbot" built with React and Postgres
+⏱️ Minut — Mindful time for meaningful work
 
-This repository serves as a reference implementation for a classroom project where students build a chatbot UI with full CRUD functionality, progressing from basic React components to a complete full-stack application with custom API and database integration.
+A gentle space to pause, focus, and create with intention.
 
-## Learning Path
+🌿 What is Minut?
 
-### 1. Component Architecture
+Minut (Romanian for “minute”) is a mindful productivity app that helps you slow down, work with intention, and understand where your time goes.
+Instead of pushing you to do more, Minut encourages you to be present with the work you already care about.
 
--   Break down wireframes into React components
--   Learn to "Think in React" with component composition
--   Build nested component structure for chatbot interface
+Choose a project → pick a focus system → start a calm, guided session.
+Minut quietly tracks your progress and reflects it back to you with clarity and warmth.
 
-### 2. React Foundation
+✨ Features
 
--   Set up React Router app in framework mode with Vite
--   Work within single App component initially
--   Create chatbot UI using nested components
+Project-based focus tracking
+Every project gets its own sessions, stats, and progress.
 
-### 3. State Management & Interactivity
+Two mindful focus systems
 
--   Implement basic interactivity with React state
--   Learn data flow through props and state
--   Build interactive chat interface
+20 / 20 / 20 method — focus • move • reflect
 
-### 4. Routing & Navigation
+25 / 5 method — the classic Pomodoro-style rhythm
 
--   Implement multiple routes using React Router
--   Create navigation for different chat threads
--   Structure application with proper routing
+Calming animations & a soft UI
+GSAP-powered transitions, flowing gradients, minimal visual noise.
 
-### 5. Database Integration
+Automatic session logging
+When a session ends, Minut logs all tracked seconds to your project.
 
--   Set up Supabase project with chat messages table
--   Use React Router `clientLoader` for data fetching
--   Load chat data for relevant routes (SPA export)
+Weekly time insights
+See how much mindful work you’ve done this week — at a glance.
 
-### 6. Data Mutations
+Supabase-powered backend
+Realtime sync, auth, Postgres, and clean client-side logic.
 
--   Implement form submission with React Router `clientAction`
--   Save messages to Supabase using REST API
--   Use raw fetch calls instead of JS client library
+🧱 Tech Stack
 
-### 7. SQL & Database Queries
+React + Vite — fast, modern frontend
 
--   Introduction to SQL with Postgres
--   Practice database queries through Supabase interface
--   Understand relational data concepts
+Supabase — authentication + database
 
-### 8. Custom API Development
+GSAP — animations and page transitions
 
--   Build out an Express API
--   Replicate Supabase REST API endpoints
--   Connect to existing Postgres database on Supabase
+TailwindCSS — composable, clean styling
 
-### 9. Full-Stack Integration
+React Router — smooth navigation
 
--   Replace Supabase REST API with custom implementation
--   Implement CRUD operations with custom SQL queries
--   Add authentication using bearer tokens
-
-## Prerequisites
-
--   Basic web development knowledge
--   No prior React experience required
--   No database experience required
-
-## Tech Stack
-
--   **Frontend**: React, React Router, Vite
--   **Backend**: Express
--   **Database**: PostgreSQL via Supabase
--   **API**: Supabase REST API (initially), custom implementation in Express (final)
+Custom design system — sliders, cards, radios, flowers, gradients
