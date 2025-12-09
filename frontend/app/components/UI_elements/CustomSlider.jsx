@@ -13,6 +13,7 @@ export default function CustomSlider({
   const [dragging, setDragging] = useState(false);
 
   const percent = ((value - min) / (max - min)) * 100;
+  const remainingPercent = 100 - percent;
   // Compute handle position in %
   let handlePercent = percent;
 
@@ -124,16 +125,16 @@ export default function CustomSlider({
       {/* Slider track */}
       <div
         ref={trackRef}
-        className="w-full h-2 bg-gray-300 rounded-lg relative cursor-pointer"
+        className="w-full h-2  bg-linear-to-r from-[#2F3CC0]
+            via-[#00BAE2]
+            via-[#E783FF] 
+            to-[#FC573D] rounded-lg relative cursor-pointer"
         onClick={(e) => updateValueFromPosition(e.clientX)}
       >
         {/* Filled portion */}
         <div
-          className="h-2 bg-linear-to-r from-[#2F3CC0]
-            via-[#00BAE2]
-            via-[#E783FF] 
-            to-[#FC573D] rounded-lg absolute top-0 left-0"
-          style={{ width: `${percent}%` }}
+          className="h-2 bg-barcolor rounded-lg absolute top-0 right-0"
+          style={{ width: `${remainingPercent}%` }}
         />
 
         {/* Handle */}

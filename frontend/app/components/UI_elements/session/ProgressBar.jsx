@@ -50,7 +50,7 @@ function ProgressBar({ elapsedWork, plannedSeconds, plannedMinutes }) {
         <div className="w-full h-2 rounded-xs overflow-hidden bg-linear-to-r from-[#EA83FF] to-[#7D80FD] relative">
           {/* Gray overlay */}
           <div
-            className="h-full bg-textdark absolute top-0 right-0"
+            className="h-full bg-barcolor absolute top-0 right-0"
             style={{ width: `${remainingPercent}%` }}
           />
         </div>

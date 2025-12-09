@@ -6,6 +6,8 @@
 
   --input-color: #ffffff;
 
+  --bar-color: #302e3b;
+
   --bg-color: #0c0c0c;
 
   --gradient1-pink: #e783ff;
@@ -36,6 +38,7 @@
     --bg-color: #fffbf4;
     --input-color: #2f2f2f;
     --header-color: #2f2f2f;
+    --bar-color: #e7dfcf;
   }
 }
 
@@ -49,6 +52,7 @@ html {
   --bg-color: #fffbf4;
   --input-color: #2f2f2f;
   --header-color: #2f2f2f;
+  --bar-color: #e7dfcf;
 }
 
 :root[data-theme-picker="🌑"] {
@@ -56,6 +60,7 @@ html {
   --header-color: #ffffff;
   --input-color: #ffffff;
   --bg-color: #0c0c0c;
+  --bar-color: #302e3b;
 }
 
 :root[data-theme-picker="🌑"] {
@@ -85,6 +90,7 @@ body {
   --color-inputcolor: var(--input-color);
   --color-bgcolor: var(--bg-color);
   --color-headercolor: var(--header-color);
+  --color-barcolor: var(--bar-color);
 }
 @layer components {
   .text-xs {

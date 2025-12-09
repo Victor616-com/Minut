@@ -66,7 +66,7 @@ function Clock({ cycleSeconds, segmentTotal, isRunning, workMode, ref }) {
           cx={90}
           cy={90}
           r={radius}
-          stroke="var(--text-color-dark)"
+          stroke="var(--bar-color)"
           strokeWidth={strokeWidth}
           fill="none"
           strokeLinecap="round" // round ends for background too
