@@ -15,18 +15,24 @@ export default function CustomSlider({
   const percent = ((value - min) / (max - min)) * 100;
   const remainingPercent = 100 - percent;
   // Compute handle position in %
-  let handlePercent = percent;
+  const [handlePercent, setHandlePercent] = useState(0);
 
   // Only clamp if trackRef.current exists
-  if (trackRef.current) {
-    const handleWidth = 26; // px
+  useEffect(() => {
+    if (!trackRef.current) return;
+
+    const percent = ((value - min) / (max - min)) * 100;
     const trackWidth = trackRef.current.offsetWidth;
+    const handleWidth = 26;
     const halfHandlePercent = (handleWidth / trackWidth) * 50;
 
-    if (handlePercent < halfHandlePercent) handlePercent = halfHandlePercent;
-    if (handlePercent > 100 - halfHandlePercent)
-      handlePercent = 100 - halfHandlePercent;
-  }
+    const clamped = Math.min(
+      Math.max(percent, halfHandlePercent),
+      100 - halfHandlePercent,
+    );
+
+    setHandlePercent(clamped);
+  }, [value, min, max]);
 
   const formatTime = (mins) => {
     const h = Math.floor(mins / 60);
