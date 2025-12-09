@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router";
+import { useParams, useNavigate, useLocation } from "react-router";
 
 import { supabase } from "../supabaseClient.js";
 
@@ -17,8 +17,9 @@ import RadioGroup from "../components/UI_elements/RadioGroup.jsx";
 export default function ProjectView() {
   const { projectId } = useParams(); // dynamic param from URL
   const navigate = useNavigate();
-  const [project, setProject] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const location = useLocation();
+  const [project, setProject] = useState(location.state?.project || null);
+  const [loading, setLoading] = useState(!project);
 
   const [sessionLength, setSessionLength] = useState(30); // in minutes
   const [sessionType, setSessionType] = useState("20/20/20");
@@ -28,27 +29,15 @@ export default function ProjectView() {
     { value: "25/5", label: "25/5 system" },
   ];
 
-  //Fetch project
+  console.log(project);
+  //Fallback
+  /*
   useEffect(() => {
-    const fetchProject = async () => {
-      const { data, error } = await supabase
-        .from("projects")
-        .select("*")
-        .eq("id", projectId)
-        .single();
-
-      if (error) {
-        console.error(error);
-        return;
-      }
-
-      setProject(data);
-      setLoading(false);
-    };
-
-    fetchProject();
-  }, [projectId]);
-
+    if (!project && !location.state) {
+      navigate("/"); // redirect to home if no project info
+    }
+  }, [project, location.state, navigate]);
+  */
   const handleStartSession = () => {
     // Navigate to session page
     navigate(`/project/${projectId}/session`, {

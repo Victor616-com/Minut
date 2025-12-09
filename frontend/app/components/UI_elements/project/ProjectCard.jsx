@@ -5,6 +5,13 @@ function ProjectCard({ project, onClick }) {
   const initials =
     project.name.slice(0, 1).toUpperCase() +
     project.name.slice(1, 2).toLowerCase();
+
+  const formatTime = (seconds) => {
+    if (seconds < 60) return `${seconds}s`;
+    const h = Math.floor(seconds / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    return `${h > 0 ? h + "h " : ""}${m}m`;
+  };
   return (
     <div
       className="flex flex-row w-full justify-between items-center"
@@ -19,7 +26,9 @@ function ProjectCard({ project, onClick }) {
         </div>
         <div>
           <p className="text-m text-headercolor">{project.name}</p>
-          <p className="text-xs text-textlight">34h 14m</p>
+          <p className="text-xs text-textlight">
+            {formatTime(project.totalTrackedSeconds)}
+          </p>
         </div>
       </div>
       <ArrowIcon direction="right" />

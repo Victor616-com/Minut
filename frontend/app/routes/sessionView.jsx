@@ -1,5 +1,5 @@
 // src/routes/sessionView.jsx
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router";
 import { supabase } from "../supabaseClient";
 import { UserAuth } from "../context/AuthContext";
@@ -35,12 +35,33 @@ export default function sessionView() {
   const headerRef = useRef(null);
   const breakTextRef = useRef(null);
   const breakFlowerRef = useRef(null);
+  const formattedTimeRef = useRef(null);
+
+  const headerLines = [
+    `Your mind is in motion on`,
+    `You're making real progress on`,
+    `Momentum is building in`,
+    `You're giving steady attention to`,
+    `Settle in. Let your focus rest on`,
+    `Take a breath, and return to`,
+    `Every minute moves`,
+    `You’re creating something meaningful with`,
+    `Small steps count. Even now, on`,
+    `You're giving your best to`,
+    `You are working hard on`,
+  ];
+  const randomHeader = useMemo(() => {
+    const index = Math.floor(Math.random() * headerLines.length);
+    return headerLines[index];
+  }, []);
 
   // Values passed from ProjectView via navigate state or fallback
   const passed = location.state || {};
-  const projectName = passed.project.name || null;
+  const projectName = passed.project?.name || "Unknown Project";
   const initialMinutes = passed.sessionLength ?? 30; // default 30 min
   const initialSystem = passed.sessionType ?? "20/20/20";
+
+  const timeSpentInProject = passed.project?.totalTrackedSeconds || 0;
 
   const [sessionId, setSessionId] = useState(null);
   const [sessionRow, setSessionRow] = useState(null); // DB object
@@ -108,6 +129,7 @@ export default function sessionView() {
     };
 
     createSessionRow();
+    console.log(timeSpentInProject);
   }, [user, projectId]);
 
   // Timer tick
@@ -317,14 +339,36 @@ export default function sessionView() {
         })
         .eq("id", sessionId);
 
-      // navigate back to project page or home
-      navigate(`/`);
+      // Refetch projects *before* navigating
+      const { data: refreshedProjects } = await supabase
+        .from("projects")
+        .select(
+          `
+          *,
+          sessions(tracked_seconds)
+        `,
+        )
+        .eq("user_id", user.id);
+
+      console.log("Refreshed projects after session:", refreshedProjects);
+
+      navigate("/", { state: { refresh: true } });
     } catch (err) {
       console.error("Failed to end session:", err);
       alert("Could not finish session, please try again.");
     }
   };
 
+  const formatTime = (seconds) => {
+    let totalTime = seconds + elapsedWork;
+
+    if (totalTime < 60) return `${totalTime}s`;
+    const h = Math.floor(totalTime / 3600);
+    const m = Math.floor((totalTime % 3600) / 60);
+    return `${h > 0 ? h + "h " : ""}${m}m`;
+  };
+
+  let formattedTime = formatTime(timeSpentInProject);
   // Initial animations that run on load
   useGSAP(() => {
     if (
@@ -456,15 +500,18 @@ export default function sessionView() {
 
   return (
     <div className="flex flex-col gap-10 px-5 items-center w-full">
-      <BackIcon ref={backIconRef} />
+      <div onClick={handleEndSession}>
+        <BackIcon ref={backIconRef} disableBack="true" />
+      </div>
+
       <div
         className="small-flower absolute top-4 right-3 "
         ref={smallFlowerRef}
       >
         <SmallFlower />
       </div>
-      <p className="text-heading1 mt-20 w-full header" ref={headerRef}>
-        You spent <span className="gradientText2">5h 23m</span> working on {""}
+      <p className="text-heading1 mt-10 w-full header" ref={headerRef}>
+        {randomHeader} {""}
         <span className="gradientText7">{projectName}</span>.
       </p>
       <div className="w-full flex flex-col gap-4">

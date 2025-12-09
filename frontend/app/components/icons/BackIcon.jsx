@@ -16,15 +16,16 @@ const backIconSVG = (
     />
   </svg>
 );
-function BackIcon({ ref }) {
+function BackIcon({ ref, disableBack = false }) {
   const navigate = useNavigate();
+  const handleClick = () => {
+    if (!disableBack) {
+      navigate(-1);
+    }
+  };
 
   return (
-    <button
-      onClick={() => navigate(-1)}
-      className="absolute left-3 top-3"
-      ref={ref}
-    >
+    <button onClick={handleClick} className="absolute left-3 top-3" ref={ref}>
       {backIconSVG}
     </button>
   );

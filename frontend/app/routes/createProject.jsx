@@ -35,6 +35,12 @@ export default function CreateProject() {
     "cbc3f6",
   ];
 
+  const handleOpenProject = (id, passedData) => {
+    navigate(`/project/${id}`, {
+      state: { project: passedData }, // pass the whole project
+    });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!name) return setError("Please enter project name");
@@ -61,7 +67,8 @@ export default function CreateProject() {
       if (error) throw error;
       setLoading(false);
       // Navigate to project page using the ID
-      navigate(`/project/${data.id}`);
+      //navigate(`/project/${data.id}`);
+      handleOpenProject(data.id, data);
     } catch (err) {
       console.error(err);
       setLoading(false);
