@@ -544,7 +544,7 @@ export default function sessionView() {
               : "Tap the screen if you are taking a break."}
           </p>
         )}
-        <div className="absolute bottom-40 w-full left-0">
+        <div className="absolute bottom-35 w-full left-0">
           <Clock
             segmentTotal={segmentTotal}
             isRunning={isRunning}
