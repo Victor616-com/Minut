@@ -104,7 +104,7 @@ export default function Home() {
     if (loading) return; // wait until projects are loaded
 
     const tl = gsap.timeline();
-
+    tl.set(".hidden-before-gsap", { visibility: "visible" });
     // Animate SmallFlower
     tl.from(".small-flower", {
       scale: 0,
@@ -152,16 +152,16 @@ export default function Home() {
   return (
     <ProtectedRoute>
       <main className="flex flex-col gap-6 px-5 items-center">
-        <div className="small-flower absolute top-4 right-3">
+        <div className="small-flower absolute top-4 right-3 hidden-before-gsap">
           <SmallFlower />
         </div>
 
-        <p className="text-heading1 mt-20 w-full">
+        <p className="text-heading1 mt-20 w-full hidden-before-gsap">
           Your mind deserves a moment. You tracked{" "}
           <span className="gradientText2">{totalTimeInApp}</span> this week.
         </p>
 
-        <div className="flex flex-col gap-6 w-full projects">
+        <div className="flex flex-col gap-6 w-full projects hidden-before-gsap">
           <Separator>Choose a project</Separator>
 
           <div className="relative h-[220px] w-full">
@@ -180,7 +180,7 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="absolute bottom-17 button">
+        <div className="absolute bottom-17 button hidden-before-gsap">
           <Button onClick={handleAddProject}>Add new project</Button>
         </div>
 

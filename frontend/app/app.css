@@ -382,3 +382,7 @@ body {
 .slider-thumb-custom:active::-moz-range-thumb {
   transform: scale(1.3);
 }
+
+.hidden-before-gsap {
+  visibility: hidden;
+}
