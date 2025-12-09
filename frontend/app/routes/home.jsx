@@ -1,6 +1,5 @@
 import { useNavigate } from "react-router";
 import { UserAuth } from "../context/AuthContext";
-import { useGSAP } from "@gsap/react";
 import { supabase } from "../supabaseClient";
 import SplitText from "gsap/SplitText";
 import gsap from "gsap";
@@ -14,20 +13,18 @@ import { useEffect, useState } from "react";
 
 export default function Home() {
   const navigate = useNavigate();
+  const { user } = UserAuth();
 
-  const { user, signOut } = UserAuth();
   const [projects, setProjects] = useState([]);
+  const [totalSecondsAllProjects, setTotalSecondsAllProjects] = useState(0);
+  const [loading, setLoading] = useState(true);
 
   const handleSignOut = async (e) => {
     e.preventDefault();
-
     const {
       data: { session },
     } = await supabase.auth.getSession();
-    if (!session) {
-      console.warn("No active session to sign out.");
-      return;
-    }
+    if (!session) return console.warn("No active session to sign out.");
 
     try {
       await supabase.auth.signOut();
@@ -37,38 +34,78 @@ export default function Home() {
     }
   };
 
+  const handleAddProject = () => {
+    navigate("/new-project");
+  };
+
+  const formatTime = (seconds) => {
+    if (seconds < 60) return `${seconds}s`;
+    const h = Math.floor(seconds / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    return `${h > 0 ? h + "h " : ""}${m}m`;
+  };
+
   // --- FETCH PROJECTS ---
   useEffect(() => {
     if (!user) return;
 
     const loadProjects = async () => {
+      setLoading(true);
       const { data, error } = await supabase
         .from("projects")
-        .select("*")
+        .select(`*, sessions!inner(tracked_seconds)`)
         .eq("user_id", user.id)
         .order("created_at", { ascending: false });
 
       if (error) {
         console.error(error);
+        setLoading(false);
         return;
       }
 
-      setProjects(data);
-      console.log("Fetched projects:", data); // Remove before deployment
+      const projectsWithTime = data.map((project) => {
+        const totalSeconds = project.sessions?.reduce(
+          (sum, session) => sum + (session.tracked_seconds ?? 0),
+          0,
+        );
+        return { ...project, totalTrackedSeconds: totalSeconds ?? 0 };
+      });
+
+      setProjects(projectsWithTime);
+
+      setLoading(false);
     };
 
     loadProjects();
   }, [user]);
 
-  const handleAddProject = () => {
-    navigate("/new-project");
+  // --- CALCULATE TOTAL TIME ---
+  useEffect(() => {
+    if (projects.length > 0) {
+      const total = projects.reduce(
+        (sum, project) => sum + (project.totalTrackedSeconds ?? 0),
+        0,
+      );
+      setTotalSecondsAllProjects(total);
+      console.log(projects);
+    }
+  }, [projects]);
+
+  const totalTimeInApp = formatTime(totalSecondsAllProjects);
+
+  const handleOpenProject = (id, passedData) => {
+    navigate(`/project/${id}`, {
+      state: { project: passedData }, // pass the whole project
+    });
   };
 
-  // GSAP Animations
-  useGSAP(() => {
+  // --- GSAP ANIMATIONS ---
+  useEffect(() => {
+    if (loading) return; // wait until projects are loaded
+
     const tl = gsap.timeline();
 
-    // Scale up the SmallFlower
+    // Animate SmallFlower
     tl.from(".small-flower", {
       scale: 0,
       opacity: 0,
@@ -76,7 +113,7 @@ export default function Home() {
       ease: "back.out(1.7)",
     });
 
-    // Then animate split text
+    // Animate heading text
     const split = new SplitText(".text-heading1", {
       type: "lines",
       linesClass: "split-lines",
@@ -89,68 +126,57 @@ export default function Home() {
       ease: "expo.out",
       stagger: 0.06,
     });
+
     tl.from(
       ".projects",
-      {
-        opacity: 0,
-        duration: 0.6,
-        ease: "expo.out",
-      },
+      { opacity: 0, duration: 0.6, ease: "expo.out" },
       "-=0.8",
-    ); // Start 0.8s earlier
-    tl.from(
-      ".stats",
-      {
-        opacity: 0,
-        duration: 0.6,
-        ease: "expo.out",
-      },
-      "-=0.8",
-    ); // Start 0.8s earlier
+    );
+    tl.from(".stats", { opacity: 0, duration: 0.6, ease: "expo.out" }, "-=0.8");
     tl.from(
       ".button",
-      {
-        opacity: 0,
-        duration: 0.6,
-        ease: "expo.out",
-      },
+      { opacity: 0, duration: 0.6, ease: "expo.out" },
       "-=0.6",
     );
-  });
+  }, [loading]);
+
+  // --- RENDER ---
+  if (loading) {
+    return (
+      <main className="flex items-center justify-center h-screen">
+        <p>Loading projects...</p>
+      </main>
+    );
+  }
 
   return (
     <ProtectedRoute>
       <main className="flex flex-col gap-6 px-5 items-center">
-        <div className="small-flower absolute top-4 right-3 ">
+        <div className="small-flower absolute top-4 right-3">
           <SmallFlower />
         </div>
 
         <p className="text-heading1 mt-20 w-full">
-          Your mind deserves a moment. You tracked {""}
-          <span className="gradientText2">46h 32m</span> this week.
+          Your mind deserves a moment. You tracked{" "}
+          <span className="gradientText2">{totalTimeInApp}</span> this week.
         </p>
+
         <div className="flex flex-col gap-6 w-full projects">
           <Separator>Choose a project</Separator>
 
           <div className="relative h-[220px] w-full">
-            {/* SCROLLABLE CONTENT */}
             <div className="overflow-y-scroll h-full flex flex-col gap-6 [&::-webkit-scrollbar]:hidden">
               {projects.map((project) => (
                 <ProjectCard
                   key={project.id}
                   project={project}
-                  onClick={() => navigate(`/project/${project.id}`)}
+                  //onClick={() => navigate(`/project/${project.id}`)}
+                  onClick={() => handleOpenProject(project.id, project)}
                 />
               ))}
             </div>
 
-            <div
-              className="
-                pointer-events-none
-                absolute bottom-0 left-0 w-full h-16
-                bg-gradient-to-t from-bgcolor to-transparent
-            "
-            />
+            <div className="pointer-events-none absolute bottom-0 left-0 w-full h-16 bg-gradient-to-t from-bgcolor to-transparent" />
           </div>
         </div>
 
