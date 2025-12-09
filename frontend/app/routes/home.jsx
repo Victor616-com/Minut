@@ -151,7 +151,7 @@ export default function Home() {
 
   return (
     <ProtectedRoute>
-      <main className="flex flex-col gap-6 px-5 items-center">
+      <main className="flex flex-col gap-6 px-5 items-center max-w-xl">
         <div className="small-flower absolute top-4 right-3 hidden-before-gsap">
           <SmallFlower />
         </div>

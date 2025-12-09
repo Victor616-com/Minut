@@ -90,33 +90,35 @@ export default function AccessMenu() {
           ${open ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"}
         `}
       >
-        <button
-          onClick={closeMenu}
-          aria-label="Close menu"
-          className="absolute top-6 right-6 text-2xl text-inputcolor"
-        >
-          ✕
-        </button>
+        <div className="w-full max-w-xl flex flex-col gap-14 items-center justify-center">
+          <button
+            onClick={closeMenu}
+            aria-label="Close menu"
+            className="absolute top-6 right-6 text-2xl text-inputcolor"
+          >
+            ✕
+          </button>
 
-        <div
-          className="flex flex-col gap-5 text-m w-full "
-          ref={themeContainerRef}
-          id="theme"
-        >
-          <Separator>Theme</Separator>
-          <RadioGroup
-            options={themeOptions}
-            selected={selectedTheme}
-            onChange={setSelectedTheme}
-            className="w-full max-w-xs"
-          />
-        </div>
+          <div
+            className="flex flex-col gap-5 text-m w-full "
+            ref={themeContainerRef}
+            id="theme"
+          >
+            <Separator>Theme</Separator>
+            <RadioGroup
+              options={themeOptions}
+              selected={selectedTheme}
+              onChange={setSelectedTheme}
+              className="w-full max-w-xs"
+            />
+          </div>
 
-        <div className="flex flex-col gap-5 text-m w-full ">
-          <Separator>Animations</Separator>
-          <div className="flex flex-row w-full gap-3">
-            <ToggleButton enabled={animations} onChange={setAnimations} />
-            <p className="text-m text-inputcolor">Turn off all animations</p>
+          <div className="flex flex-col gap-5 text-m w-full ">
+            <Separator>Animations</Separator>
+            <div className="flex flex-row w-full gap-3">
+              <ToggleButton enabled={animations} onChange={setAnimations} />
+              <p className="text-m text-inputcolor">Turn off all animations</p>
+            </div>
           </div>
         </div>
       </nav>

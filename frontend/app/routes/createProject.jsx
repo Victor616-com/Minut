@@ -132,7 +132,7 @@ export default function CreateProject() {
   });
 
   return (
-    <div className="flex flex-col gap-8 px-5 items-center w-full">
+    <div className="flex flex-col gap-8 px-5 items-center w-full max-w-xl">
       <div className="small-flower absolute top-4 right-3 ">
         <SmallFlower />
       </div>

@@ -129,7 +129,7 @@ export default function ProjectView() {
   });
 
   return (
-    <div className="flex flex-col gap-6 px-5 items-center w-full mt-10">
+    <div className="flex flex-col gap-6 px-5 items-center w-full mt-10 max-w-xl">
       <BackIcon />
       <div className="small-flower absolute top-4 right-3 ">
         <SmallFlower />

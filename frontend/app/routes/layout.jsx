@@ -7,7 +7,7 @@ import AccessMenu from "../components/accesability/AccsessMenu";
 export default function Layout() {
   return (
     <div className="app-layout">
-      <main className="main-content">
+      <main className="main-content w-full flex justify-center">
         <Outlet />
         <AccessMenu />
       </main>

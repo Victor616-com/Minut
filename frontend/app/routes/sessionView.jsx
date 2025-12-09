@@ -499,7 +499,7 @@ export default function sessionView() {
   const segmentTotal = workMode ? workInterval : breakDuration; // move this to Clock component later
 
   return (
-    <div className="flex flex-col gap-10 px-5 items-center w-full">
+    <div className="flex flex-col gap-10 px-5 items-center w-full max-w-xl">
       <div onClick={handleEndSession}>
         <BackIcon ref={backIconRef} disableBack="true" />
       </div>

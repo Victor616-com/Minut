@@ -74,6 +74,7 @@ function authentication() {
       flowerRef.current,
       {
         scale: 0.15,
+        rotate: 180,
         x: () => {
           const flowerRect = flowerRef.current.getBoundingClientRect();
           const minutRect = minutRef.current.getBoundingClientRect();
