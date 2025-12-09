@@ -47,7 +47,7 @@ export default function Home() {
 
   // --- FETCH PROJECTS ---
   useEffect(() => {
-    if (!user) return;
+    if (!user) navigate("/auth");
 
     const loadProjects = async () => {
       setLoading(true);
