@@ -63,9 +63,14 @@ html {
   --bar-color: #302e3b;
 }
 
-:root[data-theme-picker="🌑"] {
-  --base: hotpink;
-  --text: dodgerblue;
+:root[data-theme-picker="🙃"] {
+  color-scheme: dark;
+  --header-color: #ffffff;
+  --input-color: #ffffff;
+  --bg-color: #0c0c0c;
+  --bar-color: #f0f0f0;
+  --text-color-dark: #bdbdbd;
+  --text-color-light: #ffffff;
 }
 
 @font-face {
