@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { supabase } from "../supabaseClient.js";
 import { useNavigate } from "react-router"; // or react-router you use
 import { UserAuth } from "../context/AuthContext";
+import { useAnimations } from "../context/AnimationContext.jsx";
 
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
@@ -15,6 +16,7 @@ import SmallFlower from "../components/UI_elements/flower/SmallFlower.jsx";
 import BackIcon from "../components/icons/BackIcon.jsx";
 
 export default function CreateProject() {
+  const { animationsEnabled } = useAnimations();
   const { user } = UserAuth(); // assume this returns user object with id
   const navigate = useNavigate();
   const [name, setName] = useState("");
@@ -78,6 +80,7 @@ export default function CreateProject() {
 
   // GSAP Animations
   useGSAP(() => {
+    if (!animationsEnabled) return;
     const tl = gsap.timeline();
 
     // Scale up the SmallFlower
