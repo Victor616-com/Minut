@@ -19,21 +19,6 @@ export default function Home() {
   const [totalSecondsAllProjects, setTotalSecondsAllProjects] = useState(0);
   const [loading, setLoading] = useState(true);
 
-  const handleSignOut = async (e) => {
-    e.preventDefault();
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
-    if (!session) return console.warn("No active session to sign out.");
-
-    try {
-      await supabase.auth.signOut();
-      navigate("/auth");
-    } catch (err) {
-      console.error("Error signing out:", err);
-    }
-  };
-
   const handleAddProject = () => {
     navigate("/new-project");
   };
@@ -183,13 +168,6 @@ export default function Home() {
         <div className="absolute bottom-17 button hidden-before-gsap">
           <Button onClick={handleAddProject}>Add new project</Button>
         </div>
-
-        <p
-          className="text-m text-textlight absolute bottom-6 left-5"
-          onClick={handleSignOut}
-        >
-          Log Out
-        </p>
       </main>
     </ProtectedRoute>
   );

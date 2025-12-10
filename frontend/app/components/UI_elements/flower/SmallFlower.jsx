@@ -1,6 +1,7 @@
 import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
 import { useRef } from "react";
+import { useNavigate } from "react-router";
 const flower = (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -36,6 +37,7 @@ const flower = (
 );
 function SmallFlower() {
   const flowerRef = useRef(null);
+  const navigate = useNavigate();
   useGSAP(
     () => {
       gsap.to(flowerRef.current, {
@@ -48,7 +50,16 @@ function SmallFlower() {
     },
     { scope: flowerRef },
   );
-  return <div ref={flowerRef}>{flower}</div>;
+  return (
+    <div
+      ref={flowerRef}
+      onClick={() => {
+        navigate("/stats");
+      }}
+    >
+      {flower}
+    </div>
+  );
 }
 
 export default SmallFlower;
