@@ -1,23 +1,35 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { supabase } from "../supabaseClient";
 import { useNavigate } from "react-router";
-import Separator from "../components/UI_elements/Separator";
 import { UserAuth } from "../context/AuthContext";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
+
+import Separator from "../components/UI_elements/Separator";
 import BreakComplianceGraph from "../components/UI_elements/stats/BreakCommplianceGraph";
+import BackIcon from "../components/icons/BackIcon";
 
 function stats() {
   const navigate = useNavigate();
   const { user } = UserAuth();
+
+  // Refs for animations
+  const topStatsRef = useRef(null);
+  const signOutRef = useRef(null);
+  const breakComplianceGraphRef = useRef(null);
+  const backIconRef = useRef(null);
 
   const [stats, setStats] = useState({
     totalFocusSeconds: 0,
     sessionsCompleted: 0,
     breakCompliance: 0,
     totalBreakSeconds: 0,
-    weeklyBreakData: [], // ✅ Added for weekly break compliance
+    weeklyBreakData: [],
   });
 
   const [loading, setLoading] = useState(true);
+
+  const [runGraphAnimation, setRunGraphAnimation] = useState(false);
 
   const handleSignOut = async (e) => {
     e.preventDefault();
@@ -88,7 +100,7 @@ function stats() {
           return sum;
         }, 0);
 
-        // ✅ Weekly break compliance (current week)
+        // Weekly break compliance (current week)
         const now = new Date();
         const startOfWeek = new Date(now);
         startOfWeek.setDate(now.getDate() - now.getDay()); // Sunday
@@ -123,7 +135,7 @@ function stats() {
           sessionsCompleted,
           breakCompliance,
           totalBreakSeconds,
-          weeklyBreakData, // ✅ Updated state
+          weeklyBreakData,
         });
       } catch (err) {
         console.error("Error fetching stats:", err);
@@ -142,46 +154,92 @@ function stats() {
     return `${h > 0 ? h + "h " : ""}${m}m`;
   };
 
-  if (loading) {
-    return <div className="flex items-center justify-center h-screen"></div>;
-  }
+  // Animations on load
+  useGSAP(() => {
+    if (
+      loading ||
+      !signOutRef.current ||
+      !topStatsRef.current ||
+      !breakComplianceGraphRef.current ||
+      !stats.weeklyBreakData
+    )
+      return;
 
+    const tl = gsap.timeline({
+      onComplete: () => setRunGraphAnimation(true), // trigger child animations
+    });
+
+    // Make hidden elements visible
+    tl.set([signOutRef.current, topStatsRef.current], {
+      visibility: "visible",
+    });
+
+    // Animate sign out
+    tl.from(signOutRef.current, {
+      scale: 0,
+      duration: 0.3,
+      ease: "expo.out",
+    });
+
+    // Animate top stats
+    tl.from(".stats", {
+      yPercent: 50,
+      opacity: 0,
+      stagger: 0.1,
+      duration: 0.5,
+      ease: "expo.out",
+    });
+    tl.from(breakComplianceGraphRef.current, {
+      opacity: 0,
+      duration: 0.5,
+      ease: "expo.out",
+    });
+  }, [loading]);
+  if (loading) {
+    return <main className="flex items-center justify-center h-screen"></main>;
+  }
   return (
     <div className="w-full px-5 flex flex-col gap-15">
       <p
-        className="text-m gradientText2 absolute top-5 right-5"
+        className="text-m gradientText2 absolute top-5.5 right-5 hidden-before-gsap"
         onClick={handleSignOut}
+        ref={signOutRef}
       >
         /Sign Out
       </p>
+      <BackIcon ref={backIconRef} />
       {/* Stats Top */}
-      <div className="flex flex-col gap-6 mt-20">
+      <div
+        className="flex flex-col gap-6 mt-20 hidden-before-gsap"
+        ref={topStatsRef}
+      >
         <div className="w-full flex flex-col gap-5 ">
           <Separator>Your stats</Separator>
         </div>
         <div className="w-full flex flex-row justify-between">
           <div className="flex flex-col gap-6">
-            <div>
+            <div className="stats">
               <p className="text-heading3">Total focus time</p>
               <p className="text-stats gradientText2">
                 {formatTime(stats.totalFocusSeconds - stats.totalBreakSeconds)}
               </p>
             </div>
-            <div>
+            <div className="stats">
               <p className="text-heading3">Sessions completed</p>
               <p className="text-stats gradientText4">
-                {stats.sessionsCompleted} sessions
+                {stats.sessionsCompleted} session
+                {stats.sessionsCompleted > 1 && "s"}
               </p>
             </div>
           </div>
           <div className="flex flex-col gap-6">
-            <div>
+            <div className="stats">
               <p className="text-heading3">Break compliance</p>
               <p className="text-stats gradientText7">
                 {stats.breakCompliance}%
               </p>
             </div>
-            <div>
+            <div className="stats">
               <p className="text-heading3">Total break time</p>
               <p className="text-stats gradientText6">
                 {formatTime(stats.totalBreakSeconds)}
@@ -192,12 +250,20 @@ function stats() {
       </div>
 
       {/* Graph */}
-      <div className="w-full flex flex-col gap-8 ">
+      <div
+        className="w-full flex flex-col gap-8 mb-100"
+        ref={breakComplianceGraphRef}
+      >
         <Separator>Break compliance this week</Separator>
-        <div className="relative w-full mb-100">
-          {/* ✅ Pass weeklyBreakData to graph */}
-          <BreakComplianceGraph data={stats.weeklyBreakData} />
+        <div className="relative w-full">
+          <BreakComplianceGraph
+            data={stats.weeklyBreakData}
+            runGraphAnimation={runGraphAnimation}
+          />
         </div>
+        <p className="text-s text-textlight mt-10">
+          Graph has dummy info for testing
+        </p>
       </div>
     </div>
   );

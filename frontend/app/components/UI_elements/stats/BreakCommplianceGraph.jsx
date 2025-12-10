@@ -1,28 +1,21 @@
-import React from "react";
+import React, { useRef } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 
-export default function BreakComplianceGraph({ data }) {
-  /*
-  const chartData = data || [
-    { day: "Mon", value: 40 },
-    { day: "Tue", value: 55 },
-    { day: "Wed", value: 30 },
-    { day: "Thu", value: 70 },
-    { day: "Fri", value: 60 },
-    { day: "Sat", value: 45 },
-    { day: "Sun", value: 95 },
-  ];
-  */
+export default function BreakComplianceGraph({ data, runGraphAnimation }) {
+  console.log(data);
   const chartData = [
-    { day: "Mon", value: 40 },
-    { day: "Tue", value: 55 },
-    { day: "Wed", value: 30 },
-    { day: "Thu", value: 70 },
-    { day: "Fri", value: 60 },
-    { day: "Sat", value: 45 },
-    { day: "Sun", value: 95 },
+    { day: "Sun", value: 10 },
+    { day: "Mon", value: 55 },
+    { day: "Tue", value: 20 },
+    { day: "Wed", value: 40 },
+    { day: "Thu", value: 60 },
+    { day: "Fri", value: 90 },
+    { day: "Sat", value: 30 },
   ];
+
+  const chartRef = useRef(null);
+
   const maxValue = 100;
   const ySteps = 5;
   const yValues = Array.from(
@@ -30,31 +23,74 @@ export default function BreakComplianceGraph({ data }) {
     (_, i) => i * (maxValue / ySteps),
   );
 
-  // Animations on load
   useGSAP(() => {
+    if (!runGraphAnimation || !chartRef.current) return;
+
+    const lines = chartRef.current.querySelectorAll(".lines");
+    const bars = chartRef.current.querySelectorAll(".bars");
+    const percentages = chartRef.current.querySelectorAll(".procentage");
+    const yAxis = chartRef.current.querySelectorAll(".y-axis");
+    const xAxis = chartRef.current.querySelectorAll(".x-axis");
+
+    if (
+      !lines.length ||
+      !bars.length ||
+      !percentages.length ||
+      !yAxis.length ||
+      !xAxis.length
+    )
+      return;
+
     const tl = gsap.timeline();
 
-    tl.from(".lines", {
-      width: 0,
-      duration: 0.5,
+    // Make hidden elements visible
+    tl.set(".hidden-before-gsap", { visibility: "visible" });
+    tl.from(yAxis, {
+      opacity: 0,
+      xPercent: -100,
+      duration: 0.3,
       ease: "expo.out",
-      stagger: 0.1,
     });
     tl.from(
-      ".bars",
+      xAxis,
+      {
+        opacity: 0,
+        yPercent: 100,
+        duration: 0.3,
+        ease: "expo.out",
+      },
+      "<",
+    );
+    tl.from(
+      lines,
+      {
+        width: 0,
+        duration: 0.5,
+        ease: "expo.out",
+        stagger: 0.1,
+      },
+      "<",
+    );
+    tl.from(
+      bars,
       {
         height: 0,
         duration: 0.5,
         ease: "expo.out",
         stagger: 0.1,
-        //delay: 2,
       },
-      "<",
+      "-=0.4",
     );
-  }, []);
+    tl.from(percentages, {
+      opacity: 0,
+      duration: 0.5,
+      ease: "expo.out",
+      stagger: 0.1,
+    });
+  }, [runGraphAnimation]);
 
   return (
-    <div className="w-full h-50 flex flex-col ">
+    <div className="w-full h-50 flex flex-col" ref={chartRef}>
       <div className="flex flex-1 relative">
         {/* Y-axis grid lines and labels */}
         {yValues
@@ -69,29 +105,30 @@ export default function BreakComplianceGraph({ data }) {
                 transform: "translateY(50%)",
               }}
             >
-              <p className="text-s text-textlight mr-2 text-right w-8">
+              <p className="text-s text-textlight mr-2 text-right w-8 hidden-before-gsap y-axis">
                 {val}%
               </p>
-              <div className="w-full h-px bg-textdark lines" />
+              <div className="w-full h-px bg-textdark hidden-before-gsap lines" />
             </div>
           ))}
 
-        {/* Bars contained within the chart area */}
-        <div className="absolute right-0 w-[calc(100%-37px)] flex justify-between items-end h-full px-4  z-10">
+        {/* Bars */}
+        <div className="absolute right-0 w-[calc(100%-37px)] flex justify-between items-end h-full px-4 z-10">
           {chartData.map((d) => (
             <div
               key={d.day}
-              className="w-[20px] bg-gradient-to-t from-[#0ae449] to-[#abff84] rounded-t flex items-end justify-center text-white text-xs bars"
+              className="relative w-[20px] bg-gradient-to-t from-[#0ae449] to-[#abff84] rounded-t flex items-end justify-center text-white text-xs hidden-before-gsap bars"
               style={{ height: `${(d.value / maxValue) * 100}%` }}
-            ></div>
-          ))}
-        </div>
-        {/* X-axis labels */}
-        <div className=" absolute right-0 -bottom-6 flex w-[calc(100%-34px)] justify-between px-3 mt-2">
-          {chartData.map((d) => (
-            <p key={d.day} className="text-center w-fit text-s text-textlight">
-              {d.day}
-            </p>
+            >
+              <p className="absolute bottom-0 text-center translate-y-6 w-fit text-s text-textlight hidden-before-gsap x-axis">
+                {d.day}
+              </p>
+              {d.value > 0 && (
+                <p className="absolute top-0 text-center -translate-y-6 w-fit text-s text-textlight hidden-before-gsap procentage">
+                  {(d.value > 0 && d.value) || "na"}%
+                </p>
+              )}
+            </div>
           ))}
         </div>
       </div>
