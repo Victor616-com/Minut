@@ -119,15 +119,15 @@ function stats() {
   }
 
   return (
-    <div className="w-full px-5">
+    <div className="w-full px-5 flex flex-col gap-8">
       <p
         className="text-m gradientText2 absolute top-3 right-5"
         onClick={handleSignOut}
       >
         /Sign Out
       </p>
-      <div className="flex flex-col gap-6">
-        <div className="w-full flex flex-col gap-5 mt-20">
+      <div className="flex flex-col gap-6 mt-20">
+        <div className="w-full flex flex-col gap-5 ">
           <Separator>Your stats</Separator>
         </div>
         <div className="w-full flex flex-row justify-between">
@@ -135,7 +135,7 @@ function stats() {
             <div>
               <p className="text-heading3">Total focus time</p>
               <p className="text-stats gradientText2">
-                {stats.totalFocusSeconds}
+                {stats.totalFocusSeconds - stats.totalBreakSeconds}
               </p>
             </div>
             <div>
@@ -160,6 +160,9 @@ function stats() {
             </div>
           </div>
         </div>
+      </div>
+      <div className="w-full flex flex-col gap-5 ">
+        <Separator>Break compliance</Separator>
       </div>
     </div>
   );

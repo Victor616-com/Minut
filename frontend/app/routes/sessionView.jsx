@@ -27,6 +27,8 @@ export default function sessionView() {
   const breakStarting = useRef(false);
   const smallFlowerRef = useRef(null);
 
+  const currentBreakRowIdRef = useRef(null);
+
   // Animation refs
   const backIconRef = useRef(null);
   const progressBarRef = useRef(null);
@@ -210,6 +212,9 @@ export default function sessionView() {
         .single();
 
       if (error) throw error;
+
+      // ⭐ FIX: save immediately to avoid async race conditions
+      currentBreakRowIdRef.current = data.id;
       setCurrentBreakRowId(data.id);
     } catch (err) {
       console.warn("Failed to create break row:", err);
@@ -238,18 +243,27 @@ export default function sessionView() {
 
   // If break ended without the user tapping
   const endBreakAutomatically = async () => {
-    if (currentBreakRowId) {
-      try {
-        await supabase
-          .from("session_breaks")
-          .update({ break_ended_at: new Date().toISOString() })
-          .eq("id", currentBreakRowId);
-      } catch (err) {
-        console.warn("Failed to finalize break row:", err);
-      }
-      setCurrentBreakRowId(null);
-    } else console.log("No current break row ID");
+    const breakId = currentBreakRowIdRef.current;
 
+    if (!breakId) {
+      console.warn("No break ID found — race condition avoided.");
+      return;
+    }
+
+    try {
+      await supabase
+        .from("session_breaks")
+        .update({
+          break_ended_at: new Date().toISOString(),
+        })
+        .eq("id", breakId);
+    } catch (err) {
+      console.error("Failed to end break:", err);
+    }
+
+    // Reset
+    currentBreakRowIdRef.current = null;
+    setCurrentBreakRowId(null);
     setWorkMode(true);
     setCycleSeconds(0);
   };
