@@ -8,6 +8,7 @@ import gsap from "gsap";
 import Separator from "../components/UI_elements/Separator";
 import BreakComplianceGraph from "../components/UI_elements/stats/BreakCommplianceGraph";
 import BackIcon from "../components/icons/BackIcon";
+import SmallFlower from "../components/UI_elements/flower/SmallFlower";
 
 function stats() {
   const navigate = useNavigate();
@@ -250,10 +251,7 @@ function stats() {
       </div>
 
       {/* Graph */}
-      <div
-        className="w-full flex flex-col gap-8 mb-100"
-        ref={breakComplianceGraphRef}
-      >
+      <div className="w-full flex flex-col gap-8" ref={breakComplianceGraphRef}>
         <Separator>Break compliance this week</Separator>
         <div className="relative w-full">
           <BreakComplianceGraph

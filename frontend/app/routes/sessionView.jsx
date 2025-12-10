@@ -623,6 +623,9 @@ export default function sessionView() {
           }}
         />
       )}
+      <p className="text-s text-textlight mt-10">
+        Changed work and break length for testing
+      </p>
     </div>
   );
 }
