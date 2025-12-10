@@ -3,6 +3,7 @@ import { supabase } from "../supabaseClient";
 import { useNavigate } from "react-router";
 import Separator from "../components/UI_elements/Separator";
 import { UserAuth } from "../context/AuthContext";
+import BreakComplianceGraph from "../components/UI_elements/stats/BreakCommplianceGraph";
 
 function stats() {
   const navigate = useNavigate();
@@ -13,6 +14,7 @@ function stats() {
     sessionsCompleted: 0,
     breakCompliance: 0,
     totalBreakSeconds: 0,
+    weeklyBreakData: [], // ✅ Added for weekly break compliance
   });
 
   const [loading, setLoading] = useState(true);
@@ -68,8 +70,7 @@ function stats() {
 
         if (breaksError) throw breaksError;
 
-        console.log(breaks);
-        // Break compliance
+        // Break compliance (all-time)
         const totalBreaks = breaks.length;
         const takenBreaks = breaks.filter((b) => b.taken).length;
         const breakCompliance = totalBreaks
@@ -87,11 +88,42 @@ function stats() {
           return sum;
         }, 0);
 
+        // ✅ Weekly break compliance (current week)
+        const now = new Date();
+        const startOfWeek = new Date(now);
+        startOfWeek.setDate(now.getDate() - now.getDay()); // Sunday
+        startOfWeek.setHours(0, 0, 0, 0);
+
+        const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+        const dailyBreaks = daysOfWeek.reduce((acc, day) => {
+          acc[day] = { taken: 0, total: 0 };
+          return acc;
+        }, {});
+
+        breaks.forEach((b) => {
+          if (!b.break_started_at) return;
+          const breakDate = new Date(b.break_started_at);
+          if (breakDate < startOfWeek) return; // only current week
+
+          const day = daysOfWeek[breakDate.getDay()];
+          dailyBreaks[day].total += 1;
+          if (b.taken) dailyBreaks[day].taken += 1;
+        });
+
+        const weeklyBreakData = daysOfWeek.map((day) => {
+          const { taken, total } = dailyBreaks[day];
+          return {
+            day,
+            value: total ? Math.round((taken / total) * 100) : 0,
+          };
+        });
+
         setStats({
           totalFocusSeconds,
           sessionsCompleted,
           breakCompliance,
           totalBreakSeconds,
+          weeklyBreakData, // ✅ Updated state
         });
       } catch (err) {
         console.error("Error fetching stats:", err);
@@ -104,28 +136,25 @@ function stats() {
   }, [user]);
 
   const formatTime = (seconds) => {
-    if (seconds < 60) return `${seconds}s`;
+    if (seconds < 60) return `${Math.floor(seconds)}s`;
     const h = Math.floor(seconds / 3600);
     const m = Math.floor((seconds % 3600) / 60);
     return `${h > 0 ? h + "h " : ""}${m}m`;
   };
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <p>Loading stats...</p>
-      </div>
-    );
+    return <div className="flex items-center justify-center h-screen"></div>;
   }
 
   return (
-    <div className="w-full px-5 flex flex-col gap-8">
+    <div className="w-full px-5 flex flex-col gap-15">
       <p
-        className="text-m gradientText2 absolute top-3 right-5"
+        className="text-m gradientText2 absolute top-5 right-5"
         onClick={handleSignOut}
       >
         /Sign Out
       </p>
+      {/* Stats Top */}
       <div className="flex flex-col gap-6 mt-20">
         <div className="w-full flex flex-col gap-5 ">
           <Separator>Your stats</Separator>
@@ -135,7 +164,7 @@ function stats() {
             <div>
               <p className="text-heading3">Total focus time</p>
               <p className="text-stats gradientText2">
-                {stats.totalFocusSeconds - stats.totalBreakSeconds}
+                {formatTime(stats.totalFocusSeconds - stats.totalBreakSeconds)}
               </p>
             </div>
             <div>
@@ -155,14 +184,20 @@ function stats() {
             <div>
               <p className="text-heading3">Total break time</p>
               <p className="text-stats gradientText6">
-                {stats.totalBreakSeconds}
+                {formatTime(stats.totalBreakSeconds)}
               </p>
             </div>
           </div>
         </div>
       </div>
-      <div className="w-full flex flex-col gap-5 ">
-        <Separator>Break compliance</Separator>
+
+      {/* Graph */}
+      <div className="w-full flex flex-col gap-8 ">
+        <Separator>Break compliance this week</Separator>
+        <div className="relative w-full mb-100">
+          {/* ✅ Pass weeklyBreakData to graph */}
+          <BreakComplianceGraph data={stats.weeklyBreakData} />
+        </div>
       </div>
     </div>
   );
