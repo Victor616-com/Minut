@@ -93,8 +93,8 @@ export default function sessionView() {
 
   const plannedMinutes = initialMinutes;
   const plannedSeconds = plannedMinutes * 60;
-  const workInterval = getWorkInterval(initialSystem);
-  const breakDuration = getBreakDuration(initialSystem);
+  const workInterval = 20; //getWorkInterval(initialSystem);
+  const breakDuration = 10; //getBreakDuration(initialSystem);
 
   // Create session row on mount
   useEffect(() => {
@@ -248,7 +248,7 @@ export default function sessionView() {
         console.warn("Failed to finalize break row:", err);
       }
       setCurrentBreakRowId(null);
-    }
+    } else console.log("No current break row ID");
 
     setWorkMode(true);
     setCycleSeconds(0);
