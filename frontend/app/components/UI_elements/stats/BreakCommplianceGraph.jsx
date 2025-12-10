@@ -1,9 +1,11 @@
 import React, { useRef } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
+import { useAnimations } from "../../../context/AnimationContext";
 
 export default function BreakComplianceGraph({ data, runGraphAnimation }) {
-  console.log(data);
+  const { animationsEnabled } = useAnimations();
+
   const chartData = [
     { day: "Sun", value: 10 },
     { day: "Mon", value: 55 },
@@ -45,6 +47,7 @@ export default function BreakComplianceGraph({ data, runGraphAnimation }) {
 
     // Make hidden elements visible
     tl.set(".hidden-before-gsap", { visibility: "visible" });
+    if (!animationsEnabled) return;
     tl.from(yAxis, {
       opacity: 0,
       xPercent: -100,

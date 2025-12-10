@@ -9,8 +9,10 @@ import Separator from "../components/UI_elements/Separator";
 import BreakComplianceGraph from "../components/UI_elements/stats/BreakCommplianceGraph";
 import BackIcon from "../components/icons/BackIcon";
 import SmallFlower from "../components/UI_elements/flower/SmallFlower";
+import { useAnimations } from "../context/AnimationContext";
 
 function stats() {
+  const { animationsEnabled } = useAnimations();
   const navigate = useNavigate();
   const { user } = UserAuth();
 
@@ -174,6 +176,7 @@ function stats() {
     tl.set([signOutRef.current, topStatsRef.current], {
       visibility: "visible",
     });
+    if (!animationsEnabled) return;
 
     // Animate sign out
     tl.from(signOutRef.current, {

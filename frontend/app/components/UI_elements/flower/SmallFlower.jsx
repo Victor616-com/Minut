@@ -1,7 +1,8 @@
 import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router";
+import { useAnimations } from "../../../context/AnimationContext";
 const flower = (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -36,20 +37,29 @@ const flower = (
   </svg>
 );
 function SmallFlower() {
+  const { animationsEnabled } = useAnimations();
   const flowerRef = useRef(null);
+  const animationRef = useRef(null);
   const navigate = useNavigate();
-  useGSAP(
-    () => {
-      gsap.to(flowerRef.current, {
+
+  useEffect(() => {
+    // Kill any previous animation
+    if (animationRef.current) {
+      animationRef.current.kill();
+      animationRef.current = null;
+    }
+
+    // Only animate if animations are enabled
+    if (animationsEnabled && flowerRef.current) {
+      animationRef.current = gsap.to(flowerRef.current, {
         rotation: -360,
         transformOrigin: "50% 50%",
         repeat: -1,
         duration: 60,
         ease: "linear",
       });
-    },
-    { scope: flowerRef },
-  );
+    }
+  }, [animationsEnabled]); //
   return (
     <div
       ref={flowerRef}

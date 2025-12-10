@@ -3,6 +3,7 @@ import { useParams, useNavigate, useLocation } from "react-router";
 
 import { supabase } from "../supabaseClient.js";
 
+import { useAnimations } from "../context/AnimationContext.jsx";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import SplitText from "gsap/SplitText";
@@ -15,6 +16,7 @@ import CustomSlider from "../components/UI_elements/CustomSlider.jsx";
 import RadioGroup from "../components/UI_elements/RadioGroup.jsx";
 
 export default function ProjectView() {
+  const { animationsEnabled } = useAnimations();
   const { projectId } = useParams(); // dynamic param from URL
   const navigate = useNavigate();
   const location = useLocation();
@@ -47,6 +49,7 @@ export default function ProjectView() {
 
   // GSAP Animations
   useGSAP(() => {
+    if (!animationsEnabled) return;
     const tl = gsap.timeline();
 
     // Scale up the SmallFlower

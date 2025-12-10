@@ -3,11 +3,12 @@ import gsap from "gsap";
 import RadioGroup from "../UI_elements/RadioGroup";
 import Separator from "../UI_elements/Separator";
 import ToggleButton from "../UI_elements/ToggleButton";
+import { useAnimations } from "../../context/AnimationContext";
 
 export default function AccessMenu() {
   const [open, setOpen] = useState(false);
   const [selectedTheme, setSelectedTheme] = useState("💻");
-  const [animations, setAnimations] = useState(true);
+  const { animationsEnabled, setAnimationsEnabled } = useAnimations();
 
   const themeOptions = [
     { label: "System", value: "💻" },
@@ -116,8 +117,11 @@ export default function AccessMenu() {
           <div className="flex flex-col gap-5 text-m w-full ">
             <Separator>Animations</Separator>
             <div className="flex flex-row w-full gap-3">
-              <ToggleButton enabled={animations} onChange={setAnimations} />
-              <p className="text-m text-inputcolor">Turn off all animations</p>
+              <ToggleButton
+                enabled={animationsEnabled}
+                onChange={setAnimationsEnabled}
+              />
+              <p className="text-m text-inputcolor">Animations</p>
             </div>
           </div>
         </div>

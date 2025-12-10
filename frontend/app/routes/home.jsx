@@ -10,8 +10,10 @@ import ProjectCard from "../components/UI_elements/project/ProjectCard";
 import Button from "../components/UI_elements/Button";
 import ProtectedRoute from "./ProtectedRoute";
 import { useEffect, useState } from "react";
+import { useAnimations } from "../context/AnimationContext";
 
 export default function Home() {
+  const { animationsEnabled } = useAnimations();
   const navigate = useNavigate();
   const { user } = UserAuth();
 
@@ -90,6 +92,7 @@ export default function Home() {
 
     const tl = gsap.timeline();
     tl.set(".hidden-before-gsap", { visibility: "visible" });
+    if (!animationsEnabled) return;
     // Animate SmallFlower
     tl.from(".small-flower", {
       scale: 0,

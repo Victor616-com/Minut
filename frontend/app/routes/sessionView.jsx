@@ -4,6 +4,8 @@ import { useLocation, useNavigate, useParams } from "react-router";
 import { supabase } from "../supabaseClient";
 import { UserAuth } from "../context/AuthContext";
 
+import { useAnimations } from "../context/AnimationContext.jsx";
+
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import SplitText from "gsap/SplitText";
@@ -17,6 +19,7 @@ import BigFlower from "../components/UI_elements/flower/BigFlower.jsx";
 import SessionControlButton from "../components/UI_elements/session/buttons/SessionControlButton.jsx";
 
 export default function sessionView() {
+  const { animationsEnabled } = useAnimations();
   const { projectId } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
@@ -385,6 +388,7 @@ export default function sessionView() {
   let formattedTime = formatTime(timeSpentInProject);
   // Initial animations that run on load
   useGSAP(() => {
+    if (!animationsEnabled) return;
     if (
       !smallFlowerRef.current ||
       !headerRef.current ||
