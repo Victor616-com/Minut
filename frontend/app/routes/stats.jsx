@@ -200,7 +200,7 @@ function stats() {
     return <main className="flex items-center justify-center h-screen"></main>;
   }
   return (
-    <div className="w-full px-5 flex flex-col gap-15">
+    <div className="w-full px-5 flex flex-col gap-15 max-w-xl">
       <p
         className="text-m gradientText2 absolute top-5.5 right-5 hidden-before-gsap"
         onClick={handleSignOut}
