@@ -130,7 +130,7 @@ export default function Home() {
   if (loading) {
     return (
       <main className="flex items-center justify-center h-screen">
-        <p>Loading projects...</p>
+        <p className="text-bgcolor">Loading projects...</p>
       </main>
     );
   }
