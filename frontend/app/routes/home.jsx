@@ -34,8 +34,6 @@ export default function Home() {
 
   // --- FETCH PROJECTS ---
   useEffect(() => {
-    if (!user) navigate("/auth");
-
     const loadProjects = async () => {
       setLoading(true);
       const { data, error } = await supabase
@@ -138,42 +136,37 @@ export default function Home() {
   }
 
   return (
-    <ProtectedRoute>
-      <main className="flex flex-col gap-6 px-5 items-center max-w-xl">
-        <p
-          className="text-heading1 mt-20 w-full hidden-before-gsap"
-          tabindex="0"
-        >
-          Your mind deserves a moment. You tracked{" "}
-          <span className="gradientText2">{totalTimeInApp}</span> this week.
-        </p>
+    <main className="flex flex-col gap-6 px-5 items-center max-w-xl">
+      <p className="text-heading1 mt-20 w-full hidden-before-gsap" tabindex="0">
+        Your mind deserves a moment. You tracked{" "}
+        <span className="gradientText2">{totalTimeInApp}</span> this week.
+      </p>
 
-        <div className="flex flex-col gap-6 w-full projects hidden-before-gsap">
-          <Separator>Choose a project</Separator>
+      <div className="flex flex-col gap-6 w-full projects hidden-before-gsap">
+        <Separator>Choose a project</Separator>
 
-          <div className="relative h-[220px] w-full">
-            <div className="overflow-y-scroll h-full flex flex-col gap-6 [&::-webkit-scrollbar]:hidden">
-              {projects.map((project) => (
-                <ProjectCard
-                  key={project.id}
-                  project={project}
-                  //onClick={() => navigate(`/project/${project.id}`)}
-                  onClick={() => handleOpenProject(project.id, project)}
-                />
-              ))}
-            </div>
-
-            <div className="pointer-events-none absolute bottom-0 left-0 w-full h-16 bg-gradient-to-t from-bgcolor to-transparent" />
+        <div className="relative h-[220px] w-full">
+          <div className="overflow-y-scroll h-full flex flex-col gap-6 [&::-webkit-scrollbar]:hidden">
+            {projects.map((project) => (
+              <ProjectCard
+                key={project.id}
+                project={project}
+                //onClick={() => navigate(`/project/${project.id}`)}
+                onClick={() => handleOpenProject(project.id, project)}
+              />
+            ))}
           </div>
-        </div>
 
-        <div className="absolute bottom-17 button hidden-before-gsap">
-          <Button onClick={handleAddProject}>Add new project</Button>
+          <div className="pointer-events-none absolute bottom-0 left-0 w-full h-16 bg-gradient-to-t from-bgcolor to-transparent" />
         </div>
-        <div className="small-flower absolute top-4 right-3 hidden-before-gsap">
-          <SmallFlower />
-        </div>
-      </main>
-    </ProtectedRoute>
+      </div>
+
+      <div className="absolute bottom-17 button hidden-before-gsap">
+        <Button onClick={handleAddProject}>Add new project</Button>
+      </div>
+      <div className="small-flower absolute top-4 right-3 hidden-before-gsap">
+        <SmallFlower />
+      </div>
+    </main>
   );
 }
