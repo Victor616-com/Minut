@@ -11,6 +11,7 @@ import {
 import "./app.css";
 import { AuthContextProvider } from "./context/AuthContext";
 import { AnimationProvider } from "./context/AnimationContext";
+import ProtectedRoute from "./routes/ProtectedRoute";
 
 // Add links to external stylesheets, fonts, etc. here
 // https://reactrouter.com/start/framework/route-module#links
@@ -44,7 +45,9 @@ export default function App() {
   return (
     <AuthContextProvider>
       <AnimationProvider>
-        <Outlet />
+        <ProtectedRoute>
+          <Outlet />
+        </ProtectedRoute>
       </AnimationProvider>
     </AuthContextProvider>
   );

@@ -3,7 +3,8 @@ import { supabase } from "../supabaseClient";
 const AuthContext = createContext(null);
 
 export const AuthContextProvider = ({ children }) => {
-  const [session, setSession] = useState(undefined);
+  const [session, setSession] = useState(undefined); // undefined = loading
+  const loadingSession = session === undefined;
 
   // Sign up
   const signUpNewUser = async (email, password, name = null) => {
@@ -77,11 +78,12 @@ export const AuthContextProvider = ({ children }) => {
     <AuthContext.Provider
       value={{
         session,
-        setSession,
         user: session?.user ?? null,
+        loadingSession,
         signUpNewUser,
         signInUser,
         signOut,
+        setSession,
       }}
     >
       {children}
