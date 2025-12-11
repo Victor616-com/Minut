@@ -2,6 +2,7 @@ import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router";
 import { UserAuth } from "../../context/AuthContext";
 
+import { useAnimations } from "../../context/AnimationContext";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 
@@ -9,6 +10,8 @@ import InputField from "../UI_elements/InputField";
 import Button from "../UI_elements/Button";
 
 function SignUp({ toggleAuthState }) {
+  const { animationsEnabled } = useAnimations();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -54,6 +57,7 @@ function SignUp({ toggleAuthState }) {
 
   // GSAP Animations
   useGSAP(() => {
+    if (!animationsEnabled) return;
     if (
       !tagRef.current ||
       !inputRef.current ||
@@ -149,9 +153,13 @@ function SignUp({ toggleAuthState }) {
           </Button>
           <p className="text-s text-textlight" ref={bottomTextRef}>
             Already have an account?{" "}
-            <span className="gradientText6 " onClick={toggleAuthState}>
+            <button
+              type="button"
+              onClick={toggleAuthState}
+              className="gradientText6 underline focus:outline-none"
+            >
               Sign In
-            </span>
+            </button>
           </p>
         </div>
       </form>

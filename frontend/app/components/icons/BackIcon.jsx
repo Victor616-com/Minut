@@ -1,6 +1,8 @@
 import { useNavigate } from "react-router";
 const backIconSVG = (
   <svg
+    aria-hidden="true"
+    focusable="false"
     xmlns="http://www.w3.org/2000/svg"
     width="45"
     height="45"
@@ -25,7 +27,12 @@ function BackIcon({ ref, disableBack = false }) {
   };
 
   return (
-    <button onClick={handleClick} className="absolute left-3 top-3" ref={ref}>
+    <button
+      onClick={handleClick}
+      aria-label="Go back"
+      className="absolute left-3 top-3"
+      ref={ref}
+    >
       {backIconSVG}
     </button>
   );

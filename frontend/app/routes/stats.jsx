@@ -204,6 +204,7 @@ function stats() {
   }
   return (
     <div className="w-full px-5 flex flex-col gap-15 max-w-xl">
+      <h2 className="sr-only">Stats</h2>
       <p
         className="text-m gradientText2 absolute top-5.5 right-5 hidden-before-gsap"
         onClick={handleSignOut}
@@ -222,13 +223,13 @@ function stats() {
         </div>
         <div className="w-full flex flex-row justify-between">
           <div className="flex flex-col gap-6">
-            <div className="stats">
+            <div className="stats" tabIndex={0}>
               <p className="text-heading3">Total focus time</p>
               <p className="text-stats gradientText2">
                 {formatTime(stats.totalFocusSeconds - stats.totalBreakSeconds)}
               </p>
             </div>
-            <div className="stats">
+            <div className="stats" tabIndex={0}>
               <p className="text-heading3">Sessions completed</p>
               <p className="text-stats gradientText4">
                 {stats.sessionsCompleted} session
@@ -237,13 +238,13 @@ function stats() {
             </div>
           </div>
           <div className="flex flex-col gap-6">
-            <div className="stats">
+            <div className="stats" tabIndex={0}>
               <p className="text-heading3">Break compliance</p>
               <p className="text-stats gradientText7">
                 {stats.breakCompliance}%
               </p>
             </div>
-            <div className="stats">
+            <div className="stats" tabIndex={0}>
               <p className="text-heading3">Total break time</p>
               <p className="text-stats gradientText6">
                 {formatTime(stats.totalBreakSeconds)}

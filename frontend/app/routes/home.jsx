@@ -140,11 +140,10 @@ export default function Home() {
   return (
     <ProtectedRoute>
       <main className="flex flex-col gap-6 px-5 items-center max-w-xl">
-        <div className="small-flower absolute top-4 right-3 hidden-before-gsap">
-          <SmallFlower />
-        </div>
-
-        <p className="text-heading1 mt-20 w-full hidden-before-gsap">
+        <p
+          className="text-heading1 mt-20 w-full hidden-before-gsap"
+          tabindex="0"
+        >
           Your mind deserves a moment. You tracked{" "}
           <span className="gradientText2">{totalTimeInApp}</span> this week.
         </p>
@@ -170,6 +169,9 @@ export default function Home() {
 
         <div className="absolute bottom-17 button hidden-before-gsap">
           <Button onClick={handleAddProject}>Add new project</Button>
+        </div>
+        <div className="small-flower absolute top-4 right-3 hidden-before-gsap">
+          <SmallFlower />
         </div>
       </main>
     </ProtectedRoute>

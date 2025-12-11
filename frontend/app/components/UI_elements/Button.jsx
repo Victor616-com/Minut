@@ -13,6 +13,7 @@ function Button({
 }) {
   return (
     <button
+      title={loading ? loadingText : children}
       ref={ref}
       onClick={onClick}
       disabled={disabled || loading}

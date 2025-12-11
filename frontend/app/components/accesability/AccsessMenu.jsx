@@ -26,6 +26,8 @@ export default function AccessMenu() {
   const openMenu = () => setOpen(true);
   const closeMenu = () => setOpen(false);
 
+  const openButtonRef = useRef(null);
+
   // Build GSAP animation timeline once
   useEffect(() => {
     tlRef.current = gsap.timeline({ paused: true });
@@ -57,12 +59,29 @@ export default function AccessMenu() {
   useEffect(() => {
     document.documentElement.setAttribute("data-theme-picker", selectedTheme);
   }, [selectedTheme]);
+
+  // Accesability
+  useEffect(() => {
+    if (open && menuRef.current) {
+      // Move focus to FIRST focusable element inside the dialog
+      const firstFocusable = menuRef.current.querySelector(
+        "button, [href], input, select, textarea, [tabindex]:not([tabindex='-1'])",
+      );
+      firstFocusable?.focus();
+    }
+    if (!open && openButtonRef.current) {
+      openButtonRef.current.focus();
+    }
+  }, [open]);
+
   return (
     <>
       {/* Floating Accessibility Button */}
       <button
         aria-label="Open accessibility menu"
         onClick={openMenu}
+        ref={openButtonRef}
+        aria-expanded={open}
         className="fixed bottom-3 w-11 h-11 right-3 z-50 rounded-full flex items-center justify-center "
       >
         {/* Your Icon */}
@@ -82,16 +101,47 @@ export default function AccessMenu() {
       </button>
 
       {/* Menu */}
-      <nav
-        ref={menuRef}
-        role="dialog"
-        aria-modal="true"
-        aria-label="Accessibility Menu"
-        className={`fixed inset-0 bg-(--bg-color) px-5 text-white z-40 flex flex-col gap-14 items-center justify-center text-3xl
+      {open && (
+        <div
+          ref={menuRef}
+          aria-hidden={!open}
+          inert={!open ? "" : undefined}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Accessibility Menu"
+          className={`fixed inset-0 bg-(--bg-color) px-5 text-white z-40 flex flex-col gap-14 items-center justify-center text-3xl
           ${open ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"}
         `}
-      >
-        <div className="w-full max-w-xl flex flex-col gap-14 items-center justify-center">
+        >
+          <div className="w-full max-w-xl flex flex-col gap-14 items-center justify-center">
+            <h2 className="sr-only">Accessibility Settings</h2>
+
+            <div
+              className="flex flex-col gap-5 text-m w-full "
+              ref={themeContainerRef}
+              id="theme"
+            >
+              <Separator>Theme</Separator>
+              <RadioGroup
+                options={themeOptions}
+                selected={selectedTheme}
+                onChange={setSelectedTheme}
+                className="w-full max-w-xs"
+              />
+            </div>
+
+            <div className="flex flex-col gap-5 text-m w-full ">
+              <Separator>Animations</Separator>
+              <div className="flex flex-row w-full gap-3">
+                <ToggleButton
+                  enabled={animationsEnabled}
+                  onChange={setAnimationsEnabled}
+                  ariaLabel="Toggle animations on or off"
+                />
+                <p className="text-m text-inputcolor">Animations</p>
+              </div>
+            </div>
+          </div>
           <button
             onClick={closeMenu}
             aria-label="Close menu"
@@ -99,33 +149,8 @@ export default function AccessMenu() {
           >
             ✕
           </button>
-
-          <div
-            className="flex flex-col gap-5 text-m w-full "
-            ref={themeContainerRef}
-            id="theme"
-          >
-            <Separator>Theme</Separator>
-            <RadioGroup
-              options={themeOptions}
-              selected={selectedTheme}
-              onChange={setSelectedTheme}
-              className="w-full max-w-xs"
-            />
-          </div>
-
-          <div className="flex flex-col gap-5 text-m w-full ">
-            <Separator>Animations</Separator>
-            <div className="flex flex-row w-full gap-3">
-              <ToggleButton
-                enabled={animationsEnabled}
-                onChange={setAnimationsEnabled}
-              />
-              <p className="text-m text-inputcolor">Animations</p>
-            </div>
-          </div>
         </div>
-      </nav>
+      )}
     </>
   );
 }
