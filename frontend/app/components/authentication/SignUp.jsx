@@ -107,7 +107,7 @@ function SignUp({ toggleAuthState }) {
       </p>
       <form
         onSubmit={handleSignup}
-        className="flex flex-col items-center gap-[70px]"
+        className="flex flex-col items-center gap-[70px] mt-15"
       >
         <div className="flex flex-col gap-5" ref={inputRef}>
           {error && (
@@ -116,18 +116,21 @@ function SignUp({ toggleAuthState }) {
             </p>
           )}
           <InputField
+            label="Email"
             placeholder="Enter your email"
             value={email}
             type="email"
             onChange={setEmail}
           />
           <InputField
+            label="Password"
             placeholder="Enter your password"
             value={password}
             type="password"
             onChange={setPassword}
           />
           <InputField
+            label="Confirm Password"
             placeholder="Confirm your password"
             value={confirmPassword}
             type="password"

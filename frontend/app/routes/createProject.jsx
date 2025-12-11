@@ -153,9 +153,12 @@ export default function CreateProject() {
         </div>
 
         <InputField
+          label="Project name"
+          type="text"
           value={name}
           placeholder="Enter project name"
-          className="w-full inputField"
+          className="w-full inputField mt-5"
+          inputClassName="w-full"
           onChange={setName}
         />
         <div className="absolute bottom-17 button">
