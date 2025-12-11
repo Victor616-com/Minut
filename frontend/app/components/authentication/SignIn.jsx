@@ -2,6 +2,7 @@ import React, { useRef, useState } from "react";
 import { UserAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router";
 
+import { useAnimations } from "../../context/AnimationContext";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 
@@ -9,6 +10,7 @@ import InputField from "../UI_elements/InputField";
 import Button from "../UI_elements/Button";
 
 function SignIn({ toggleAuthState }) {
+  const { animationsEnabled } = useAnimations();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -43,6 +45,7 @@ function SignIn({ toggleAuthState }) {
 
   // GSAP Animations
   useGSAP(() => {
+    if (!animationsEnabled) return;
     if (
       !tagRef.current ||
       !inputRef.current ||
