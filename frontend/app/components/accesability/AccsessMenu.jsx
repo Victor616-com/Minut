@@ -7,7 +7,8 @@ import { useAnimations } from "../../context/AnimationContext";
 
 export default function AccessMenu() {
   const [open, setOpen] = useState(false);
-  const [selectedTheme, setSelectedTheme] = useState("💻");
+  const storedTheme = localStorage.getItem("selectedTheme") || "💻";
+  const [selectedTheme, setSelectedTheme] = useState(storedTheme);
   const { animationsEnabled, setAnimationsEnabled } = useAnimations();
 
   const themeOptions = [
@@ -27,6 +28,25 @@ export default function AccessMenu() {
   const closeMenu = () => setOpen(false);
 
   const openButtonRef = useRef(null);
+
+  // Sync animationsEnabled from localStorage on mount
+  useEffect(() => {
+    const storedAnimations = localStorage.getItem("animationsEnabled");
+    if (storedAnimations !== null) {
+      setAnimationsEnabled(storedAnimations === "true");
+    }
+  }, [setAnimationsEnabled]);
+
+  // Persist theme to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem("selectedTheme", selectedTheme);
+    document.documentElement.setAttribute("data-theme-picker", selectedTheme);
+  }, [selectedTheme]);
+
+  // Persist animationsEnabled to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem("animationsEnabled", animationsEnabled);
+  }, [animationsEnabled]);
 
   // Build GSAP animation timeline once
   useEffect(() => {
@@ -70,7 +90,7 @@ export default function AccessMenu() {
       firstFocusable?.focus();
     }
     if (!open && openButtonRef.current) {
-      openButtonRef.current.focus();
+      return;
     }
   }, [open]);
 
@@ -80,6 +100,7 @@ export default function AccessMenu() {
       <button
         aria-label="Open accessibility menu"
         onClick={openMenu}
+        aria-hidden={!open}
         ref={openButtonRef}
         aria-expanded={open}
         className="fixed bottom-3 w-11 h-11 right-3 z-50 rounded-full flex items-center justify-center "
@@ -101,56 +122,54 @@ export default function AccessMenu() {
       </button>
 
       {/* Menu */}
-      {open && (
-        <div
-          ref={menuRef}
-          aria-hidden={!open}
-          inert={!open ? "" : undefined}
-          role="dialog"
-          aria-modal="true"
-          aria-label="Accessibility Menu"
-          className={`fixed inset-0 bg-(--bg-color) px-5 text-white z-40 flex flex-col gap-14 items-center justify-center text-3xl
+      <div
+        ref={menuRef}
+        aria-hidden={!open}
+        inert={!open ? "" : undefined}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Accessibility Menu"
+        className={`fixed inset-0 bg-(--bg-color) px-5 text-white z-40 flex flex-col gap-14 items-center justify-center text-3xl
           ${open ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"}
         `}
-        >
-          <div className="w-full max-w-xl flex flex-col gap-14 items-center justify-center">
-            <h2 className="sr-only">Accessibility Settings</h2>
+      >
+        <div className="w-full max-w-xl flex flex-col gap-14 items-center justify-center">
+          <h2 className="sr-only">Accessibility Settings</h2>
 
-            <div
-              className="flex flex-col gap-5 text-m w-full "
-              ref={themeContainerRef}
-              id="theme"
-            >
-              <Separator>Theme</Separator>
-              <RadioGroup
-                options={themeOptions}
-                selected={selectedTheme}
-                onChange={setSelectedTheme}
-                className="w-full max-w-xs"
+          <div
+            className="flex flex-col gap-5 text-m w-full "
+            ref={themeContainerRef}
+            id="theme"
+          >
+            <Separator>Theme</Separator>
+            <RadioGroup
+              options={themeOptions}
+              selected={selectedTheme}
+              onChange={setSelectedTheme}
+              className="w-full max-w-xs"
+            />
+          </div>
+
+          <div className="flex flex-col gap-5 text-m w-full ">
+            <Separator>Animations</Separator>
+            <div className="flex flex-row w-full gap-3">
+              <ToggleButton
+                enabled={animationsEnabled}
+                onChange={setAnimationsEnabled}
+                ariaLabel="Toggle animations on or off"
               />
-            </div>
-
-            <div className="flex flex-col gap-5 text-m w-full ">
-              <Separator>Animations</Separator>
-              <div className="flex flex-row w-full gap-3">
-                <ToggleButton
-                  enabled={animationsEnabled}
-                  onChange={setAnimationsEnabled}
-                  ariaLabel="Toggle animations on or off"
-                />
-                <p className="text-m text-inputcolor">Animations</p>
-              </div>
+              <p className="text-m text-inputcolor">Animations</p>
             </div>
           </div>
-          <button
-            onClick={closeMenu}
-            aria-label="Close menu"
-            className="absolute top-6 right-6 text-2xl text-inputcolor"
-          >
-            ✕
-          </button>
         </div>
-      )}
+        <button
+          onClick={closeMenu}
+          aria-label="Close menu"
+          className="absolute top-6 right-6 text-2xl text-inputcolor"
+        >
+          ✕
+        </button>
+      </div>
     </>
   );
 }
