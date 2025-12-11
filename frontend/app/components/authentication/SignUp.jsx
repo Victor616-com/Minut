@@ -149,9 +149,13 @@ function SignUp({ toggleAuthState }) {
           </Button>
           <p className="text-s text-textlight" ref={bottomTextRef}>
             Already have an account?{" "}
-            <span className="gradientText6 " onClick={toggleAuthState}>
+            <button
+              type="button"
+              onClick={toggleAuthState}
+              className="gradientText6 underline focus:outline-none"
+            >
               Sign In
-            </span>
+            </button>
           </p>
         </div>
       </form>

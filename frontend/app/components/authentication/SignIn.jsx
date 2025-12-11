@@ -130,9 +130,13 @@ function SignIn({ toggleAuthState }) {
           </Button>
           <p className="text-s text-textlight" ref={bottomTextRef}>
             Don't have an account?{" "}
-            <span className="gradientText7 " onClick={toggleAuthState}>
+            <button
+              type="button"
+              onClick={toggleAuthState}
+              className="gradientText7 underline focus:outline-none"
+            >
               Sign Up
-            </span>
+            </button>
           </p>
         </div>
       </form>
