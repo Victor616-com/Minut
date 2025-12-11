@@ -104,12 +104,14 @@ function SignIn({ toggleAuthState }) {
             </p>
           )}
           <InputField
+            label="Email"
             placeholder="Enter your email"
             value={email}
             type="email"
             onChange={setEmail}
           />
           <InputField
+            label="Password"
             placeholder="Enter your password"
             value={password}
             type="password"
