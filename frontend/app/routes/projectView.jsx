@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useParams, useNavigate, useLocation } from "react-router";
 
 import { supabase } from "../supabaseClient.js";
@@ -25,6 +25,8 @@ export default function ProjectView() {
 
   const [sessionLength, setSessionLength] = useState(30); // in minutes
   const [sessionType, setSessionType] = useState("20/20/20");
+
+  const headingRef = useRef(null);
 
   const options = [
     { value: "20/20/20", label: "20/20/20 system" },
@@ -61,7 +63,7 @@ export default function ProjectView() {
     });
 
     // Then animate split text
-    const split = new SplitText(".text-heading1", {
+    const split = new SplitText(headingRef.current, {
       type: "lines",
       linesClass: "split-lines",
     });
@@ -137,7 +139,7 @@ export default function ProjectView() {
       <div className="small-flower absolute top-4 right-3 ">
         <SmallFlower />
       </div>
-      <h1 className="text-heading1 mt-8 w-full">
+      <h1 className="text-heading1 mt-8 w-full" ref={headingRef}>
         Take a moment to pause and{" "}
         <span className="gradientText1">breathe</span>. Your mind will thank
         you.
@@ -151,6 +153,7 @@ export default function ProjectView() {
           step={10} // Change to 1 while testing
           initial={sessionLength}
           onChange={(val) => setSessionLength(val)}
+          title="session length"
         />
       </div>
       <div className="flex flex-col w-full gap-4 mt-6 system-selection">

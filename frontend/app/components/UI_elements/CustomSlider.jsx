@@ -7,6 +7,7 @@ export default function CustomSlider({
   step = 30,
   initial = 30,
   onChange,
+  title,
 }) {
   const [value, setValue] = useState(initial);
   const trackRef = useRef(null);
@@ -146,6 +147,7 @@ export default function CustomSlider({
         {/* Handle */}
         <div
           role="slider"
+          aria-label={title}
           aria-valuemin={min}
           aria-valuemax={max}
           aria-valuenow={value}
