@@ -45,9 +45,7 @@ export default function App() {
   return (
     <AuthContextProvider>
       <AnimationProvider>
-        <ProtectedRoute>
-          <Outlet />
-        </ProtectedRoute>
+        <Outlet />
       </AnimationProvider>
     </AuthContextProvider>
   );
