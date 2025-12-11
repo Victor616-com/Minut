@@ -61,14 +61,16 @@ function SmallFlower() {
     }
   }, [animationsEnabled]); //
   return (
-    <div
+    <button
+      tabindex="0"
+      title="See your stats"
       ref={flowerRef}
       onClick={() => {
         navigate("/stats");
       }}
     >
       {flower}
-    </div>
+    </button>
   );
 }
 
