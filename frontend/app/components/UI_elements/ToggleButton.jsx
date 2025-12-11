@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from "react";
 import { gsap } from "gsap";
 
-const ToggleButton = ({ enabled, onChange }) => {
+const ToggleButton = ({ enabled, onChange, ariaLabel }) => {
   const toggleRef = useRef(null);
   const backgroundRef = useRef(null);
 
@@ -32,6 +32,7 @@ const ToggleButton = ({ enabled, onChange }) => {
       ref={backgroundRef}
       onClick={handleToggle}
       role="switch"
+      aria-label={ariaLabel}
       aria-checked={enabled}
       tabIndex={0}
       className="w-12 h-[25px] rounded-full relative cursor-pointer border-2 border-inputcolor focus:outline-none"

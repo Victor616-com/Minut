@@ -115,13 +115,6 @@ export default function AccessMenu() {
         >
           <div className="w-full max-w-xl flex flex-col gap-14 items-center justify-center">
             <h2 className="sr-only">Accessibility Settings</h2>
-            <button
-              onClick={closeMenu}
-              aria-label="Close menu"
-              className="absolute top-6 right-6 text-2xl text-inputcolor"
-            >
-              ✕
-            </button>
 
             <div
               className="flex flex-col gap-5 text-m w-full "
@@ -143,11 +136,19 @@ export default function AccessMenu() {
                 <ToggleButton
                   enabled={animationsEnabled}
                   onChange={setAnimationsEnabled}
+                  ariaLabel="Toggle animations on or off"
                 />
                 <p className="text-m text-inputcolor">Animations</p>
               </div>
             </div>
           </div>
+          <button
+            onClick={closeMenu}
+            aria-label="Close menu"
+            className="absolute top-6 right-6 text-2xl text-inputcolor"
+          >
+            ✕
+          </button>
         </div>
       )}
     </>

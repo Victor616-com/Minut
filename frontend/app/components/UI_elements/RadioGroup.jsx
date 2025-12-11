@@ -3,7 +3,11 @@ import React from "react";
 
 export default function RadioGroup({ options, selected, onChange, className }) {
   return (
-    <div className={`flex flex-col w-full gap-4 ${className || ""}`}>
+    <div
+      className={`flex flex-col w-full gap-4 ${className || ""}`}
+      role="radiogroup"
+      aria-label="Theme options"
+    >
       {options.map((option) => (
         <label
           key={option.value}
