@@ -463,6 +463,7 @@ export default function sessionView() {
         ease: "expo.out",
       },
     });
+    tl.set(".hidden-before-gsap", { visibility: "visible" });
 
     if (!workMode) {
       // fade out both
@@ -545,7 +546,7 @@ export default function sessionView() {
         </div>
         {!workMode && (
           <div
-            className="absolute bottom-60 left-1/2 -translate-x-1/2"
+            className="absolute bottom-60 left-1/2 -translate-x-1/2 hidden-before-gsap"
             ref={breakFlowerRef}
           >
             <BigFlower breakTaken={breakTaken} />
