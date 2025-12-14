@@ -15,7 +15,7 @@ import { useAnimations } from "../context/AnimationContext";
 export default function Home() {
   const { animationsEnabled } = useAnimations();
   const navigate = useNavigate();
-  const { user } = UserAuth();
+  const { user, loadingSession } = UserAuth();
 
   const [projects, setProjects] = useState([]);
   const [totalSecondsAllProjects, setTotalSecondsAllProjects] = useState(0);
@@ -34,6 +34,12 @@ export default function Home() {
 
   // --- FETCH PROJECTS ---
   useEffect(() => {
+    if (loadingSession) return; // wait for auth
+    if (!user) {
+      navigate("/auth");
+      return;
+    }
+    console.log(user);
     const loadProjects = async () => {
       setLoading(true);
       const { data, error } = await supabase
@@ -127,13 +133,6 @@ export default function Home() {
   }, [loading]);
 
   // --- RENDER ---
-  if (loading) {
-    return (
-      <main className="flex items-center justify-center h-screen">
-        <p className="text-bgcolor">Loading projects...</p>
-      </main>
-    );
-  }
 
   return (
     <ProtectedRoute>

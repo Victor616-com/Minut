@@ -125,7 +125,7 @@ export default function AccessMenu() {
       <div
         ref={menuRef}
         aria-hidden={!open}
-        inert={!open ? "" : undefined}
+        inert={!open}
         role="dialog"
         aria-modal="true"
         aria-label="Accessibility Menu"

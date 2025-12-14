@@ -60,6 +60,7 @@ export const AuthContextProvider = ({ children }) => {
       console.error("Error signing out:", error);
     }
   };
+
   // Listen for session changes
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
