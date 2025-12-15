@@ -103,7 +103,7 @@ export default function AccessMenu() {
         aria-hidden={!open}
         ref={openButtonRef}
         aria-expanded={open}
-        className="fixed bottom-3 w-11 h-11 right-3 z-50 rounded-full flex items-center justify-center "
+        className="fixed bottom-3 w-11 h-11 right-3 z-50 rounded-full flex items-center justify-center cursor-pointer"
       >
         {/* Your Icon */}
         <svg
@@ -165,7 +165,7 @@ export default function AccessMenu() {
         <button
           onClick={closeMenu}
           aria-label="Close menu"
-          className="absolute top-6 right-6 text-2xl text-inputcolor"
+          className="absolute top-6 right-6 text-2xl text-inputcolor cursor-pointer"
         >
           ✕
         </button>

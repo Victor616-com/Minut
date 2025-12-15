@@ -14,8 +14,9 @@ function ProjectCard({ project, onClick }) {
   };
   return (
     <div
-      className="flex flex-row w-full justify-between items-center"
+      className="flex flex-row w-full justify-between items-center cursor-pointer"
       onClick={onClick}
+      tabIndex={0}
     >
       <div className="flex flex-row items-center gap-4">
         <div

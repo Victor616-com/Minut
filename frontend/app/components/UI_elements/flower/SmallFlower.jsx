@@ -68,6 +68,7 @@ function SmallFlower() {
       onClick={() => {
         navigate("/stats");
       }}
+      className="cursor-pointer"
     >
       {flower}
     </button>
