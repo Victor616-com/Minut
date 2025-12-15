@@ -6,7 +6,7 @@ import { useAnimations } from "../../../context/AnimationContext";
 export default function BreakComplianceGraph({ data, runGraphAnimation }) {
   const { animationsEnabled } = useAnimations();
 
-  const chartData = [
+  const chartData = data || [
     { day: "Sun", value: 10 },
     { day: "Mon", value: 55 },
     { day: "Tue", value: 20 },

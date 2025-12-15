@@ -263,9 +263,6 @@ function stats() {
             runGraphAnimation={runGraphAnimation}
           />
         </div>
-        <p className="text-s text-textlight mt-10">
-          Graph has dummy info for testing
-        </p>
       </div>
     </div>
   );

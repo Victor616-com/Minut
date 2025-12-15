@@ -98,8 +98,8 @@ export default function sessionView() {
 
   const plannedMinutes = initialMinutes;
   const plannedSeconds = plannedMinutes * 60;
-  const workInterval = 20; //getWorkInterval(initialSystem);
-  const breakDuration = 10; //getBreakDuration(initialSystem);
+  const workInterval = getWorkInterval(initialSystem);
+  const breakDuration = getBreakDuration(initialSystem);
 
   // Create session row on mount
   useEffect(() => {
