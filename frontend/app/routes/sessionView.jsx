@@ -244,6 +244,24 @@ export default function sessionView() {
     }
   };
 
+  // Allow user to press the space key to mark break as taken
+  useEffect(() => {
+    if (!workMode) {
+      const handleKeyDown = (e) => {
+        if (e.code === "Space") {
+          e.preventDefault(); // prevent page scroll
+          userTookBreak();
+        }
+      };
+
+      window.addEventListener("keydown", handleKeyDown);
+
+      return () => {
+        window.removeEventListener("keydown", handleKeyDown);
+      };
+    }
+  }, [workMode, userTookBreak]);
+
   // If break ended without the user tapping
   const endBreakAutomatically = async () => {
     const breakId = currentBreakRowIdRef.current;
@@ -386,6 +404,7 @@ export default function sessionView() {
   };
 
   let formattedTime = formatTime(timeSpentInProject);
+
   // Initial animations that run on load
   useGSAP(() => {
     if (!animationsEnabled) return;
@@ -555,12 +574,12 @@ export default function sessionView() {
 
         {!workMode && (
           <p
-            className="absolute top-10 left-0 text-heading1 w-full px-5"
+            className="absolute top-10 left-0 text-heading1 w-full px-5 hidden-before-gsap"
             ref={breakTextRef}
           >
             {breakTaken
               ? "Relax your shoulders. They’ve been carrying enough."
-              : "Tap the screen if you are taking a break."}
+              : "Tap the screen or press space if you are taking a break."}
           </p>
         )}
         <div className="absolute bottom-35 w-full left-0">
@@ -573,33 +592,8 @@ export default function sessionView() {
           />
         </div>
 
-        {/* If on break, show tap button to mark break as taken 
-        {!workMode && (
-          <div className="mt-4">
-            <p className="mb-2 text-sm text-textlight">On break</p>
-            <button
-              onClick={userTookBreak}
-              className="px-6 py-3 bg-blue-600 text-white rounded"
-            >
-              I took the break
-            </button>
-            <p className="mt-2 text-xs text-textlight">
-              Tap this if you actually took the break. If you don't, we'll store
-              it as missed after the break finishes.
-            </p>
-          </div>
-        )}
-          */}
-
         {/* Controls */}
         <div className="flex w-full justify-center left-0 gap-4 mt-6 absolute bottom-16 buttons z-30">
-          {/* Old Controls 
-          <Button onClick={handleRestart}>Restart</Button>
-          <Button onClick={togglePause}>
-            {isRunning ? "Pause" : "Resume"}
-          </Button>
-          <Button onClick={handleEndSession}>End</Button>
-          */}
           <div className="relative">
             <SessionControlButton
               variant="restart"

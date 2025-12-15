@@ -19,7 +19,7 @@ function Button({
       disabled={disabled || loading}
       type={type}
       className={`
-        relative rounded-sm px-5 py-3.5 text-heading2 w-fit
+        relative cursor-pointer rounded-sm px-5 py-3.5 text-heading2 w-fit
         gradient-border-${gradient}
         ${className}
       `}

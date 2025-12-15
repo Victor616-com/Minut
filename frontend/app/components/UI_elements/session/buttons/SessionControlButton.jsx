@@ -55,7 +55,7 @@ function SessionControlButton({
       aria-label={label}
       title={label}
       aria-busy={loading || undefined}
-      className={`flex items-center justify-center ${className}`}
+      className={`flex items-center justify-center cursor-pointer ${className}`}
       {...props}
     >
       {loading ? <span>{loadingText}</span> : <Icon />}

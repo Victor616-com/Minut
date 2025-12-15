@@ -30,7 +30,7 @@ function BackIcon({ ref, disableBack = false }) {
     <button
       onClick={handleClick}
       aria-label="Go back"
-      className="absolute left-3 top-3"
+      className="absolute left-3 top-3 cursor-pointer"
       ref={ref}
     >
       {backIconSVG}

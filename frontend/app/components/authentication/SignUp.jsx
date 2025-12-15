@@ -156,7 +156,7 @@ function SignUp({ toggleAuthState }) {
             <button
               type="button"
               onClick={toggleAuthState}
-              className="gradientText6 underline focus:outline-none"
+              className="gradientText6 underline cursor-pointer"
             >
               Sign In
             </button>
