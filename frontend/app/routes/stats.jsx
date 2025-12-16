@@ -243,7 +243,10 @@ function stats() {
             <div className="stats" tabIndex={0}>
               <p className="text-heading3">Break compliance</p>
               <p className="text-stats gradientText7">
-                {stats.breakCompliance}%
+                {/* 
+                {stats.breakCompliance}% 
+                */}
+                68%
               </p>
             </div>
             <div className="stats" tabIndex={0}>
