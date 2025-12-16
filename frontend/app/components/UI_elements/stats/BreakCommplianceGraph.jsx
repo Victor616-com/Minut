@@ -120,7 +120,7 @@ export default function BreakComplianceGraph({ data, runGraphAnimation }) {
           {chartData.map((d) => (
             <div
               key={d.day}
-              className="relative w-[20px] bg-gradient-to-t from-[#0ae449] to-[#abff84] rounded-t flex items-end justify-center text-white text-xs hidden-before-gsap bars"
+              className="relative w-5 bg-linear-to-t from-[#0ae449] to-[#abff84] rounded-t flex items-end justify-center text-white text-xs hidden-before-gsap bars"
               style={{ height: `${(d.value / maxValue) * 100}%` }}
             >
               <p className="absolute bottom-0 text-center translate-y-6 w-fit text-s text-textlight hidden-before-gsap x-axis">

@@ -33,7 +33,6 @@ export default function ProjectView() {
     { value: "25/5", label: "25/5 system" },
   ];
 
-  console.log(project);
   //Fallback
   /*
   useEffect(() => {

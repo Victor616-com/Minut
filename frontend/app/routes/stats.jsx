@@ -8,7 +8,6 @@ import gsap from "gsap";
 import Separator from "../components/UI_elements/Separator";
 import BreakComplianceGraph from "../components/UI_elements/stats/BreakCommplianceGraph";
 import BackIcon from "../components/icons/BackIcon";
-import SmallFlower from "../components/UI_elements/flower/SmallFlower";
 import { useAnimations } from "../context/AnimationContext";
 
 function stats() {
@@ -56,7 +55,7 @@ function stats() {
       setLoading(true);
 
       try {
-        // 1️⃣ Get all completed sessions for the user
+        // 1. Get all completed sessions for the user
         const { data: sessions, error: sessionError } = await supabase
           .from("sessions")
           .select("id, tracked_seconds, breaks_count")
@@ -74,7 +73,7 @@ function stats() {
         // Sessions completed
         const sessionsCompleted = sessions.length;
 
-        // 2️⃣ Get all breaks for the user's sessions
+        // 2. Get all breaks for the user's sessions
         const { data: breaks, error: breaksError } = await supabase
           .from("session_breaks")
           .select("taken, break_started_at, break_ended_at")
@@ -150,6 +149,7 @@ function stats() {
     fetchStats();
   }, [user]);
 
+  // Time formatter
   const formatTime = (seconds) => {
     if (seconds < 60) return `${Math.floor(seconds)}s`;
     const h = Math.floor(seconds / 3600);
@@ -199,9 +199,11 @@ function stats() {
       ease: "expo.out",
     });
   }, [loading]);
+
   if (loading) {
     return <main className="flex items-center justify-center h-screen"></main>;
   }
+
   return (
     <div className="w-full px-5 flex flex-col gap-15 max-w-xl">
       <h2 className="sr-only">Stats</h2>

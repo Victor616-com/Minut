@@ -134,7 +134,6 @@ export default function sessionView() {
     };
 
     createSessionRow();
-    console.log(timeSpentInProject);
   }, [user, projectId]);
 
   // Timer tick
@@ -216,7 +215,6 @@ export default function sessionView() {
 
       if (error) throw error;
 
-      // ⭐ FIX: save immediately to avoid async race conditions
       currentBreakRowIdRef.current = data.id;
       setCurrentBreakRowId(data.id);
     } catch (err) {
@@ -237,7 +235,7 @@ export default function sessionView() {
           taken: true,
         })
         .eq("id", currentBreakRowId);
-      console.log("Marked break as taken");
+
       setBreakTaken(true);
     } catch (err) {
       console.warn("Failed to mark break taken:", err);
@@ -262,7 +260,7 @@ export default function sessionView() {
     }
   }, [workMode, userTookBreak]);
 
-  // If break ended without the user tapping
+  // End break
   const endBreakAutomatically = async () => {
     const breakId = currentBreakRowIdRef.current;
 
@@ -538,22 +536,27 @@ export default function sessionView() {
 
   return (
     <div className="flex flex-col gap-10 px-5 items-center w-full max-w-xl">
+      {/* Back button */}
       <div onClick={handleEndSession}>
         <BackIcon ref={backIconRef} disableBack="true" />
       </div>
 
+      {/* Small flower */}
       <div
         className="small-flower absolute top-4 right-3 "
         ref={smallFlowerRef}
       >
         <SmallFlower />
       </div>
+
+      {/* Header text */}
       <p className="text-heading1 mt-10 w-full header" ref={headerRef}>
         {randomHeader} {""}
         <span className="gradientText7">{projectName}</span>.
       </p>
+
       <div className="w-full flex flex-col gap-4">
-        {/* progress bar */}
+        {/* Progress bar */}
         <div className="w-full progress-bar" ref={progressBarRef}>
           <div className="w-full" ref={progressBarRefInside}>
             <ProgressBar
@@ -563,6 +566,8 @@ export default function sessionView() {
             />
           </div>
         </div>
+
+        {/* Big flower */}
         {!workMode && (
           <div
             className="absolute bottom-60 left-1/2 -translate-x-1/2 hidden-before-gsap"
@@ -572,6 +577,7 @@ export default function sessionView() {
           </div>
         )}
 
+        {/* Break mode text */}
         {!workMode && (
           <p
             className="absolute top-10 left-0 text-heading1 w-full px-5 hidden-before-gsap"
@@ -582,6 +588,8 @@ export default function sessionView() {
               : "Tap the screen or press space if you are taking a break."}
           </p>
         )}
+
+        {/* Clock */}
         <div className="absolute bottom-35 w-full left-0">
           <Clock
             segmentTotal={segmentTotal}
@@ -610,7 +618,7 @@ export default function sessionView() {
         </div>
       </div>
 
-      {/*Overlay to capture taps during break*/}
+      {/* Overlay to capture taps during break */}
       {!workMode && (
         <div
           className="fixed inset-0 z-20"
